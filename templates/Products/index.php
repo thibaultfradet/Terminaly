@@ -15,7 +15,6 @@
                     <th><?= $this->Paginator->sort('name') ?></th>
                     <th><?= $this->Paginator->sort('category_id') ?></th>
                     <th><?= $this->Paginator->sort('price') ?></th>
-                    <th><?= $this->Paginator->sort('photo') ?></th>
                     <th><?= $this->Paginator->sort('created_at') ?></th>
                     <th class="actions"><?= __('Actions') ?></th>
                 </tr>
@@ -27,7 +26,6 @@
                     <td><?= h($product->name) ?></td>
                     <td><?= $product->hasValue('category') ? $this->Html->link($product->category->name, ['controller' => 'Categories', 'action' => 'view', $product->category->id]) : '' ?></td>
                     <td><?= $this->Number->format($product->price) ?></td>
-                    <td><?= h($product->photo) ?></td>
                     <td><?= h($product->created_at) ?></td>
                     <td class="actions">
                         <?= $this->Html->link(__('View'), ['action' => 'view', $product->id]) ?>

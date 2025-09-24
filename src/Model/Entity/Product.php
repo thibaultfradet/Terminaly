@@ -12,7 +12,6 @@ use Cake\ORM\Entity;
  * @property string $name
  * @property int $category_id
  * @property string $price
- * @property string|null $photo
  * @property \Cake\I18n\DateTime|null $created_at
  *
  * @property \App\Model\Entity\Category $category
@@ -33,7 +32,6 @@ class Product extends Entity
         'name' => true,
         'category_id' => true,
         'price' => true,
-        'photo' => true,
         'created_at' => true,
         'category' => true,
         'sales_product' => true,

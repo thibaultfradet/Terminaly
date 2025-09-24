@@ -27,10 +27,6 @@
                     <td><?= $product->hasValue('category') ? $this->Html->link($product->category->name, ['controller' => 'Categories', 'action' => 'view', $product->category->id]) : '' ?></td>
                 </tr>
                 <tr>
-                    <th><?= __('Photo') ?></th>
-                    <td><?= h($product->photo) ?></td>
-                </tr>
-                <tr>
                     <th><?= __('Id') ?></th>
                     <td><?= $this->Number->format($product->id) ?></td>
                 </tr>

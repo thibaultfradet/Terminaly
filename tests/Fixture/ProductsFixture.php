@@ -23,8 +23,7 @@ class ProductsFixture extends TestFixture
                 'name' => 'Lorem ipsum dolor sit amet',
                 'category_id' => 1,
                 'price' => 1.5,
-                'photo' => 'Lorem ipsum dolor sit amet',
-                'created_at' => '2025-09-24 16:15:02',
+                'created_at' => '2025-09-24 16:46:22',
             ],
         ];
         parent::init();

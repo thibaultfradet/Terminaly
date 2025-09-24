@@ -77,11 +77,6 @@ class ProductsTable extends Table
             ->notEmptyString('price');
 
         $validator
-            ->scalar('photo')
-            ->maxLength('photo', 255)
-            ->allowEmptyString('photo');
-
-        $validator
             ->dateTime('created_at')
             ->allowEmptyDateTime('created_at');
 

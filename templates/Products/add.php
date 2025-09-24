@@ -21,7 +21,6 @@
                     echo $this->Form->control('name');
                     echo $this->Form->control('category_id', ['options' => $categories]);
                     echo $this->Form->control('price');
-                    echo $this->Form->control('photo');
                     echo $this->Form->control('created_at', ['empty' => true]);
                 ?>
             </fieldset>

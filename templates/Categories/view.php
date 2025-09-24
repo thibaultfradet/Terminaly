@@ -41,7 +41,6 @@
                             <th><?= __('Name') ?></th>
                             <th><?= __('Category Id') ?></th>
                             <th><?= __('Price') ?></th>
-                            <th><?= __('Photo') ?></th>
                             <th><?= __('Created At') ?></th>
                             <th class="actions"><?= __('Actions') ?></th>
                         </tr>
@@ -51,7 +50,6 @@
                             <td><?= h($product->name) ?></td>
                             <td><?= h($product->category_id) ?></td>
                             <td><?= h($product->price) ?></td>
-                            <td><?= h($product->photo) ?></td>
                             <td><?= h($product->created_at) ?></td>
                             <td class="actions">
                                 <?= $this->Html->link(__('View'), ['controller' => 'Products', 'action' => 'view', $product->id]) ?>
