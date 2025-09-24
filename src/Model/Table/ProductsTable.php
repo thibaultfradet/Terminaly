@@ -11,7 +11,7 @@ use Cake\Validation\Validator;
 /**
  * Products Model
  *
- * @property \App\Model\Table\CategoriesTable&\Cake\ORM\Association\BelongsTo $Categories
+ * @property \App\Model\Table\CategorysTable&\Cake\ORM\Association\BelongsTo $Categorys
  * @property \App\Model\Table\SalesProductTable&\Cake\ORM\Association\HasMany $SalesProduct
  *
  * @method \App\Model\Entity\Product newEmptyEntity()
@@ -44,7 +44,7 @@ class ProductsTable extends Table
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
 
-        $this->belongsTo('Categories', [
+        $this->belongsTo('Categorys', [
             'foreignKey' => 'category_id',
             'joinType' => 'INNER',
         ]);
@@ -92,7 +92,7 @@ class ProductsTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->existsIn(['category_id'], 'Categories'), ['errorField' => 'category_id']);
+        $rules->add($rules->existsIn(['category_id'], 'Categorys'), ['errorField' => 'category_id']);
 
         return $rules;
     }

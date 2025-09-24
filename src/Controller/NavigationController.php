@@ -7,16 +7,16 @@ class NavigationController extends AppController
 {
     public function index($categoryId = null)
     {
-        $categoriesTable = $this->fetchTable('Categories');
+        $categorysTable = $this->fetchTable('Categorys');
         $productsTable   = $this->fetchTable('Products');
 
-        // get all categories
-        $categories = $categoriesTable->find()->all();
+        // get all categorys
+        $category = $categorysTable->find()->all();
 
         // get the default category => 
         $defaultCategoryName = "Pain";
         if (!$categoryId) {
-            $defaultCategory = $categoriesTable->find()
+            $defaultCategory = $categorysTable->find()
                 ->where(['name' => $defaultCategoryName])
                 ->first();
 
@@ -34,6 +34,6 @@ class NavigationController extends AppController
 
         $this->set('product_path', 'eclair.jpg');
         $this->set('category_path', 'pain.jpg');
-        $this->set(compact('categories', 'products', 'categoryId'));
+        $this->set(compact('categorys', 'products', 'categoryId'));
     }
 }

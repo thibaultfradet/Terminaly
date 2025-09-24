@@ -9,7 +9,7 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Categories Model
+ * Categorys Model
  *
  * @property \App\Model\Table\ProductsTable&\Cake\ORM\Association\HasMany $Products
  *
@@ -27,7 +27,7 @@ use Cake\Validation\Validator;
  * @method iterable<\App\Model\Entity\Category>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Category>|false deleteMany(iterable $entities, array $options = [])
  * @method iterable<\App\Model\Entity\Category>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Category> deleteManyOrFail(iterable $entities, array $options = [])
  */
-class CategoriesTable extends Table
+class CategorysTable extends Table
 {
     /**
      * Initialize method
@@ -39,7 +39,7 @@ class CategoriesTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('categories');
+        $this->setTable('categorys');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
 

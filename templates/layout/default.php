@@ -36,8 +36,19 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
 </head>
-<body>
-    <main class="main">
+<body class="bg-gray-100">
+    <nav class="mb-3">
+        <?php
+        $controller = mb_strtolower($this->getRequest()->getParam('controller'));
+        $allowed = ['dashboard', 'category', 'products'];
+        if (in_array($controller, $allowed, true)) {
+            // back office nav call
+            echo $this->element('topnav-bo');
+        }
+        ?>
+
+    </nav>
+    <main class="main mt-3">
         <div class="container">
             <?= $this->Flash->render() ?>
             <?= $this->fetch('content') ?>

@@ -3,20 +3,20 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\CategoriesTable;
+use App\Model\Table\CategorysTable;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\CategoriesTable Test Case
+ * App\Model\Table\CategorysTable Test Case
  */
-class CategoriesTableTest extends TestCase
+class CategorysTableTest extends TestCase
 {
     /**
      * Test subject
      *
-     * @var \App\Model\Table\CategoriesTable
+     * @var \App\Model\Table\CategorysTable
      */
-    protected $Categories;
+    protected $Categorys;
 
     /**
      * Fixtures
@@ -24,7 +24,7 @@ class CategoriesTableTest extends TestCase
      * @var list<string>
      */
     protected array $fixtures = [
-        'app.Categories',
+        'app.Categorys',
         'app.Products',
     ];
 
@@ -36,8 +36,8 @@ class CategoriesTableTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $config = $this->getTableLocator()->exists('Categories') ? [] : ['className' => CategoriesTable::class];
-        $this->Categories = $this->getTableLocator()->get('Categories', $config);
+        $config = $this->getTableLocator()->exists('Categorys') ? [] : ['className' => CategorysTable::class];
+        $this->Categorys = $this->getTableLocator()->get('Categorys', $config);
     }
 
     /**
@@ -47,7 +47,7 @@ class CategoriesTableTest extends TestCase
      */
     protected function tearDown(): void
     {
-        unset($this->Categories);
+        unset($this->Categorys);
 
         parent::tearDown();
     }
@@ -56,7 +56,7 @@ class CategoriesTableTest extends TestCase
      * Test validationDefault method
      *
      * @return void
-     * @link \App\Model\Table\CategoriesTable::validationDefault()
+     * @link \App\Model\Table\CategorysTable::validationDefault()
      */
     public function testValidationDefault(): void
     {

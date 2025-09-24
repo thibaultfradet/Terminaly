@@ -2,7 +2,7 @@
     <aside class="w-1/5 bg-white shadow-lg p-4 h-full overflow-y-auto">
         <h2 class="text-lg font-bold mb-4">Catégories</h2>
         <ul class="space-y-3">
-            <?php foreach ($categories as $cat): ?>
+            <?php foreach ($categorys as $cat): ?>
                 <li>
                     <?= $this->element('category_item_plus', ['category' => $cat, 'categoryId' => $categoryId]) ?>
                 </li>

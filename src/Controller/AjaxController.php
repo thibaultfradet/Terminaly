@@ -107,7 +107,7 @@ class AjaxController extends AppController
             {
                 // get && format object
                 $product = $this->fetchTable('Products')->get($key, [
-                    'contain' => ['Categories']
+                    'contain' => ['Categorys']
                 ]);
                 $item = [
                     "idProduct" => $product->id,

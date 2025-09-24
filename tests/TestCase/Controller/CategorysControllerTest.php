@@ -3,16 +3,16 @@ declare(strict_types=1);
 
 namespace App\Test\TestCase\Controller;
 
-use App\Controller\CategoriesController;
+use App\Controller\CategorysController;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Controller\CategoriesController Test Case
+ * App\Controller\CategorysController Test Case
  *
- * @link \App\Controller\CategoriesController
+ * @link \App\Controller\CategorysController
  */
-class CategoriesControllerTest extends TestCase
+class CategorysControllerTest extends TestCase
 {
     use IntegrationTestTrait;
 
@@ -22,7 +22,7 @@ class CategoriesControllerTest extends TestCase
      * @var list<string>
      */
     protected array $fixtures = [
-        'app.Categories',
+        'app.Categorys',
         'app.Products',
     ];
 
@@ -30,7 +30,7 @@ class CategoriesControllerTest extends TestCase
      * Test index method
      *
      * @return void
-     * @link \App\Controller\CategoriesController::index()
+     * @link \App\Controller\CategorysController::index()
      */
     public function testIndex(): void
     {
@@ -41,7 +41,7 @@ class CategoriesControllerTest extends TestCase
      * Test view method
      *
      * @return void
-     * @link \App\Controller\CategoriesController::view()
+     * @link \App\Controller\CategorysController::view()
      */
     public function testView(): void
     {
@@ -52,7 +52,7 @@ class CategoriesControllerTest extends TestCase
      * Test add method
      *
      * @return void
-     * @link \App\Controller\CategoriesController::add()
+     * @link \App\Controller\CategorysController::add()
      */
     public function testAdd(): void
     {
@@ -63,7 +63,7 @@ class CategoriesControllerTest extends TestCase
      * Test edit method
      *
      * @return void
-     * @link \App\Controller\CategoriesController::edit()
+     * @link \App\Controller\CategorysController::edit()
      */
     public function testEdit(): void
     {
@@ -74,7 +74,7 @@ class CategoriesControllerTest extends TestCase
      * Test delete method
      *
      * @return void
-     * @link \App\Controller\CategoriesController::delete()
+     * @link \App\Controller\CategorysController::delete()
      */
     public function testDelete(): void
     {

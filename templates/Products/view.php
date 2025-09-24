@@ -4,81 +4,40 @@
  * @var \App\Model\Entity\Product $product
  */
 ?>
-<div class="row">
-    <aside class="column">
-        <div class="side-nav">
-            <h4 class="heading"><?= __('Actions') ?></h4>
-            <?= $this->Html->link(__('Edit Product'), ['action' => 'edit', $product->id], ['class' => 'side-nav-item']) ?>
-            <?= $this->Form->postLink(__('Delete Product'), ['action' => 'delete', $product->id], ['confirm' => __('Are you sure you want to delete # {0}?', $product->id), 'class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('List Products'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('New Product'), ['action' => 'add'], ['class' => 'side-nav-item']) ?>
-        </div>
-    </aside>
-    <div class="column column-80">
-        <div class="products view content">
-            <h3><?= h($product->name) ?></h3>
-            <table>
-                <tr>
-                    <th><?= __('Name') ?></th>
-                    <td><?= h($product->name) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Category') ?></th>
-                    <td><?= $product->hasValue('category') ? $this->Html->link($product->category->name, ['controller' => 'Categories', 'action' => 'view', $product->category->id]) : '' ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Id') ?></th>
-                    <td><?= $this->Number->format($product->id) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Price') ?></th>
-                    <td><?= $this->Number->format($product->price) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Created At') ?></th>
-                    <td><?= h($product->created_at) ?></td>
-                </tr>
-            </table>
-            <div class="related">
-                <h4><?= __('Related Sales Product') ?></h4>
-                <?php if (!empty($product->sales_product)) : ?>
-                <div class="table-responsive">
-                    <table>
-                        <tr>
-                            <th><?= __('Id') ?></th>
-                            <th><?= __('Sale Id') ?></th>
-                            <th><?= __('Product Id') ?></th>
-                            <th><?= __('Quantity') ?></th>
-                            <th><?= __('Unit') ?></th>
-                            <th><?= __('Price') ?></th>
-                            <th class="actions"><?= __('Actions') ?></th>
-                        </tr>
-                        <?php foreach ($product->sales_product as $salesProduct) : ?>
-                        <tr>
-                            <td><?= h($salesProduct->id) ?></td>
-                            <td><?= h($salesProduct->sale_id) ?></td>
-                            <td><?= h($salesProduct->product_id) ?></td>
-                            <td><?= h($salesProduct->quantity) ?></td>
-                            <td><?= h($salesProduct->unit) ?></td>
-                            <td><?= h($salesProduct->price) ?></td>
-                            <td class="actions">
-                                <?= $this->Html->link(__('View'), ['controller' => 'SalesProduct', 'action' => 'view', $salesProduct->id]) ?>
-                                <?= $this->Html->link(__('Edit'), ['controller' => 'SalesProduct', 'action' => 'edit', $salesProduct->id]) ?>
-                                <?= $this->Form->postLink(
-                                    __('Delete'),
-                                    ['controller' => 'SalesProduct', 'action' => 'delete', $salesProduct->id],
-                                    [
-                                        'method' => 'delete',
-                                        'confirm' => __('Are you sure you want to delete # {0}?', $salesProduct->id),
-                                    ]
-                                ) ?>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </table>
-                </div>
-                <?php endif; ?>
+<div class="column column-80 w-full max-w-4xl mx-auto p-6 md:p-10 bg-white rounded-xl shadow-lg">
+    <div class="products view content">
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-6 border-b border-gray-200 pb-4">
+            <h3 class="text-3xl font-bold text-gray-900"><?= h($product->name) ?></h3>
+            <div class="flex items-center space-x-2 mt-4 sm:mt-0">
+                <?= $this->Html->link(__('Modifier'), ['action' => 'edit', $product->id], ['class' => 'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200']) ?>
+                <?= $this->Form->postLink(__('Supprimer'), ['action' => 'delete', $product->id], ['confirm' => __('Êtes-vous sûr de vouloir supprimer # {0}?', $product->id), 'class' => 'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200']) ?>
+                <?= $this->Html->link(__('Liste des Produits'), ['action' => 'index'], ['class' => 'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200']) ?>
             </div>
         </div>
+        
+        <table class="w-full text-gray-700">
+            <tbody class="divide-y divide-gray-200">
+                <tr>
+                    <th class="py-3 px-4 text-left font-bold w-1/4">Nom</th>
+                    <td class="py-3 px-4"><?= h($product->name) ?></td>
+                </tr>
+                <tr>
+                    <th class="py-3 px-4 text-left font-bold w-1/4">Catégorie</th>
+                    <td class="py-3 px-4"><?= $product->hasValue('category') ? $this->Html->link($product->category->name, ['controller' => 'Categorys', 'action' => 'view', $product->category->id], ['class' => 'text-blue-600 hover:underline']) : '' ?></td>
+                </tr>
+                <tr>
+                    <th class="py-3 px-4 text-left font-bold w-1/4">Id</th>
+                    <td class="py-3 px-4"><?= $this->Number->format($product->id) ?></td>
+                </tr>
+                <tr>
+                    <th class="py-3 px-4 text-left font-bold w-1/4">Prix</th>
+                    <td class="py-3 px-4"><?= $this->Number->format($product->price) ?></td>
+                </tr>
+                <tr>
+                    <th class="py-3 px-4 text-left font-bold w-1/4">Créé le</th>
+                    <td class="py-3 px-4"><?= h($product->created_at) ?></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
