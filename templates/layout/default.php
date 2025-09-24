@@ -28,6 +28,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->Html->meta('icon') ?>
 
     <?= $this->Html->css(['fonts',]) ?>
+    <?= $this->Html->script('jquery-3.7.1.min'); ?>
     <?= $this->Html->script('https://cdn.tailwindcss.com', ['block' => true]) ?>
         
     

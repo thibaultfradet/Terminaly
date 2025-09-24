@@ -24,3 +24,17 @@
         <?php endif; ?>
     </main>
 </div>
+
+<footer class="fixed bottom-0 left-0 right-0 bg-white shadow-xl p-4 flex justify-between items-center z-50">
+    <div class="text-lg font-bold">
+        Total : <span id="total-price">0,00</span> €
+    </div>
+    <button id="checkout-button" class="bg-green-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-600 transition">
+        Passer au paiement
+    </button>
+</footer>
+
+<?= $this->element('modal_product') ?>
+<?= $this->Html->script(['modal-product']) ?>
+
+
