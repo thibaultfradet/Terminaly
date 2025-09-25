@@ -65,20 +65,23 @@
                 <span class="font-bold text-lg">Total :</span>
                 <span id="cart-total" class="font-bold text-lg">0,00 €</span>
             </div>
-            <button id="checkout-button" class="w-full bg-green-500 text-white py-3 rounded-lg font-bold hover:bg-green-600 transition">
+            <button id="checkout-button" 
+                    class="w-full bg-green-500 text-white py-3 rounded-lg font-bold hover:bg-green-600 transition">
                 Passer au paiement
             </button>
+
         </div>
     </aside>
 </div>
 
-<!-- Modal produit -->
+<!-- Modal product -->
 <?= $this->element('modal_product') ?>
-<?= $this->Html->script(['modal-product']) ?>
+<?= $this->element('modal_payment') ?>
+
+<?= $this->Html->script(['modal-product','modal-payment']) ?>
 
 <?php if (!empty($isAllProducts) && $isAllProducts): ?>
     <script>
         const allProducts = <?= json_encode($products) ?>;
     </script>
-    <?= $this->Html->script('all_products') ?>
 <?php endif; ?>
