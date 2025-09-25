@@ -99,7 +99,7 @@ class AjaxController extends AppController
     public function getCart()
     {
         $sessionData = $this->request->getSession()->read();
-        $response = [];
+        $response = ["success" => true, "cart" => []]; // prepare array        
         
         if (isset($sessionData["Cart"]))
         {
@@ -117,7 +117,7 @@ class AjaxController extends AppController
                     "created_at" => $product->created_at,
                     "quantity" => $quantity
                 ];
-                $response[] = $item;
+                $response["cart"][] = $item;
             }
     
             return $this->response->withType("application/json")
