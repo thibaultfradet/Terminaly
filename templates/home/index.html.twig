@@ -12,7 +12,7 @@
         <ul class="list-unstyled">
             {# All products link #}
             <li class="mb-2">
-                <a href="{{ path('navigation_index', {'filter': 'all'}) }}" 
+                <a href="{{ path('app_home', {'filter': 'all'}) }}" 
                    class="d-block px-3 py-2 rounded fw-semibold text-primary text-decoration-none bg-opacity-10 hover-bg-light">
                     🛒 Tous les produits
                 </a>
@@ -23,7 +23,7 @@
             {# Other categories #}
             {% for cat in categorys %}
                 <li class="mb-2">
-                    {% include 'category/_item_plus.html.twig' with {'category': cat, 'categoryId': categoryId} %}
+                    {% include 'home/_category_item.html.twig' with {'category': cat, 'categoryId': categoryId} %}
                 </li>
             {% endfor %}
         </ul>
@@ -46,7 +46,7 @@
             <div class="row g-3">
                 {% for product in products %}
                     <div class="col-6 col-md-4 col-lg-3">
-                        {% include 'product/_item.html.twig' with {'product': product} %}
+                        {% include 'home/_product_item.html.twig' with {'product': product} %}
                     </div>
                 {% endfor %}
             </div>

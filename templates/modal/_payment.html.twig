@@ -1,0 +1,57 @@
+{# Checkout Modal #}
+<div id="checkout-modal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content rounded-4 p-4">
+
+            {# Close button #}
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            {# Title #}
+            <h2 class="h5 fw-bold text-center mb-4">Choisissez votre moyen de paiement</h2>
+
+            {# Step 1: Payment selection #}
+            <div class="d-grid gap-3 payment-selection">
+                <div class="card payment-card text-center p-3 border cursor-pointer" data-method="cash">
+                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width:64px; height:64px;">
+                        <span class="fs-3">💵</span>
+                    </div>
+                    <div class="fw-bold mb-1">Espèces</div>
+                    <div class="text-muted small">Paiement en espèce.</div>
+                </div>
+
+                <div class="card payment-card text-center p-3 border cursor-pointer" data-method="card">
+                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width:64px; height:64px;">
+                        <span class="fs-3">💳</span>
+                    </div>
+                    <div class="fw-bold mb-1">Carte bancaire</div>
+                    <div class="text-muted small">Paiement en carte bancaire.</div>
+                </div>
+
+                <div class="card payment-card text-center p-3 border cursor-pointer" data-method="check">
+                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width:64px; height:64px;">
+                        <span class="fs-3">🧾</span>
+                    </div>
+                    <div class="fw-bold mb-1">Chèque</div>
+                    <div class="text-muted small">Paiement en chèque.</div>
+                </div>
+            </div>
+
+            {# Step 2: Cash input #}
+            <div class="cash-step d-none text-center mt-3">
+                <h3 class="h6 fw-bold mb-2">Montant reçu :</h3>
+                <input id="cash-amount" type="number" min="0" step="0.01" class="form-control mb-3 text-center" placeholder="0.00 €">
+                <button id="cash-next" class="btn btn-primary w-100 fw-bold">Valider</button>
+            </div>
+
+            {# Step 3: Confirmation #}
+            <div class="confirm-step d-none text-center mt-3">
+                <h3 class="h6 fw-bold mb-2">Confirmez le paiement</h3>
+                <p class="confirm-method mb-2"></p>
+                <p class="confirm-amount mb-3"></p>
+                <button id="confirm-pay" class="btn btn-success w-100 fw-bold">Confirmer</button>
+            </div>
+        </div>
+    </div>
+</div>

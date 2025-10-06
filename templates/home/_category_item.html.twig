@@ -1,0 +1,11 @@
+{# category_item_plus.html.twig #}
+<a href="{{ path('app_home', { categoryId: category.id }) }}"
+   class="d-flex flex-column align-items-center bg-white shadow rounded-3 p-3 text-decoration-none
+          {% if category.id == categoryId %}border border-primary{% endif %}">
+    
+    <img src="{{ asset('img/categorys/' ~ category_path) }}"
+         alt="{{ category.name }}"
+         class="img-fluid rounded mb-2" style="width:80px; height:80px; object-fit:cover;">
+         
+    <span class="fw-semibold text-dark">{{ category.name }}</span>
+</a>

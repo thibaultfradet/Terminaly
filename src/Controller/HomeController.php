@@ -3,9 +3,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Product;
+use App\Form\ProductType;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -13,26 +17,24 @@ class HomeController extends AbstractController
 {
     #[Route(path: '/', name: 'app_home')]
     public function index(
+        Request $request,
         CategoryRepository $categoryRepository,
         ProductRepository $productRepository,
+        EntityManagerInterface $em,
         ?string $categoryId = null
     ): Response {
-        // Fetch all categories
         $categories = $categoryRepository->findAll();
         $products = [];
         $isAllProducts = false;
 
         if ($categoryId === 'all') {
-            // All products
             $products = $productRepository->findAll();
             $isAllProducts = true;
 
         } elseif ($categoryId) {
-            // Specific category
             $products = $productRepository->findBy(['category' => $categoryId]);
 
         } else {
-            // Default category fallback
             $defaultCategoryName = 'Pain';
             $defaultCategory = $categoryRepository->findOneBy(['name' => $defaultCategoryName]);
 
@@ -42,11 +44,19 @@ class HomeController extends AbstractController
             }
         }
 
-        // Example static image paths (to be adjusted to your real structure)
-        $productPath = 'eclair.jpg';
-        $categoryPath = 'pain.jpg';
+        $productPath = 'image.jpg';
+        $categoryPath = 'image.jpg';
 
-        // Render Twig template
+        $productForm = $this->createForm(ProductType::class, new Product());
+        $productForm->handleRequest($request);
+
+        if ($productForm->isSubmitted() && $productForm->isValid()) {
+            $em->persist($productForm->getData());
+            $em->flush();
+            $this->addFlash('success', 'Produit enregistré avec succès !');
+            return $this->redirectToRoute('app_home');
+        }
+
         return $this->render('home/index.html.twig', [
             'categorys' => $categories,
             'products' => $products,
@@ -54,6 +64,7 @@ class HomeController extends AbstractController
             'isAllProducts' => $isAllProducts,
             'product_path' => $productPath,
             'category_path' => $categoryPath,
+            'form' => $productForm->createView(),
         ]);
     }
 }
