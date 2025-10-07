@@ -28,20 +28,20 @@
     </div>
 
     {# Sélection du mois - correct #}
-<div class="mb-4">
-    <label for="month" class="form-label fw-semibold me-2">Mois :</label>
-    <select id="month" class="form-select w-auto d-inline-block"
-            onchange="window.location.href = this.options[this.selectedIndex].dataset.url;">
-        {% for num, name in months %}
-            {% set url = path('admin_product_stats', {'id': product.id, 'month': num}) %}
-            <option value="{{ num }}"
-                    data-url="{{ url }}"
-                    {% if currentMonth == num %}selected{% endif %}>
-                {{ name }}
-            </option>
-        {% endfor %}
-    </select>
-</div>
+    <div class="mb-4">
+        <label for="month" class="form-label fw-semibold me-2">Mois :</label>
+        <select id="month" class="form-select w-auto d-inline-block"
+                onchange="window.location.href = this.options[this.selectedIndex].dataset.url;">
+            {% for num, name in months %}
+                {% set url = path('admin_product_stats', {'id': product.id, 'month': num}) %}
+                <option value="{{ num }}"
+                        data-url="{{ url }}"
+                        {% if currentMonth == num %}selected{% endif %}>
+                    {{ name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
 
     <!-- Graphiques -->
     <div class="row g-4">
