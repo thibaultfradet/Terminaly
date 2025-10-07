@@ -15,17 +15,19 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
-    #[Route(path: '/', name: 'app_home')]
+   #[Route(path: '/', name: 'app_home')]
     public function index(
         Request $request,
         CategoryRepository $categoryRepository,
         ProductRepository $productRepository,
-        EntityManagerInterface $em,
-        ?string $categoryId = null
+        EntityManagerInterface $em
     ): Response {
         $categories = $categoryRepository->findAll();
         $products = [];
         $isAllProducts = false;
+
+        // Get the filter from the query string
+        $categoryId = $request->query->get('filter');
 
         if ($categoryId === 'all') {
             $products = $productRepository->findAll();
@@ -33,7 +35,6 @@ class HomeController extends AbstractController
 
         } elseif ($categoryId) {
             $products = $productRepository->findBy(['category' => $categoryId]);
-
         } else {
             $defaultCategoryName = 'Pain';
             $defaultCategory = $categoryRepository->findOneBy(['name' => $defaultCategoryName]);
@@ -43,6 +44,8 @@ class HomeController extends AbstractController
                 $products = $productRepository->findBy(['category' => $categoryId]);
             }
         }
+
+
 
         $productPath = 'image.jpg';
         $categoryPath = 'image.jpg';

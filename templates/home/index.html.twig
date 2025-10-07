@@ -3,89 +3,84 @@
 {% block title %}Boutique{% endblock %}
 
 {% block body %}
+<div class="container-fluid vh-100 bg-light">
+    <div class="row h-100 gx-0">
 
-<div class="d-flex vh-100 bg-light">
-    {# Sidebar categories #}
-    <aside class="col-2 bg-white border-end p-3 overflow-auto">
-        <h2 class="h5 fw-bold mb-4">Catégories</h2>
-        
-        <ul class="list-unstyled">
-            {# All products link #}
-            <li class="mb-2">
-                <a href="{{ path('app_home', {'filter': 'all'}) }}" 
-                   class="d-block px-3 py-2 rounded fw-semibold text-primary text-decoration-none bg-opacity-10 hover-bg-light">
-                    🛒 Tous les produits
-                </a>
-            </li>
-
-            <li><hr class="my-2"></li>
-
-            {# Other categories #}
-            {% for cat in categorys %}
+        {# Sidebar categories #}
+        <aside class="col-12 col-md-3 col-lg-2 bg-white border-end p-3 overflow-auto">
+            <h2 class="h5 fw-bold mb-4">Catégories</h2>
+            <ul class="list-unstyled">
                 <li class="mb-2">
-                    {% include 'home/_category_item.html.twig' with {'category': cat, 'categoryId': categoryId} %}
+                    <a href="{{ path('app_home', {'filter': 'all'}) }}" 
+                       class="d-block px-3 py-2 rounded fw-semibold text-primary text-decoration-none bg-opacity-10 hover-bg-light">
+                        🛒 Tous les produits
+                    </a>
                 </li>
-            {% endfor %}
-        </ul>
-    </aside>
-
-    {# Products section #}
-    <main class="flex-fill p-4 overflow-auto">
-        <h1 class="h4 fw-bold mb-4">Produits</h1>
-
-        {% if isAllProducts is defined and isAllProducts %}
-            <div class="mb-3">
-                <input type="text" id="search-products" placeholder="Rechercher un produit..."
-                       class="form-control">
-            </div>
-        {% endif %}
-
-        {% if products is empty %}
-            <p class="text-muted">Aucun produit disponible.</p>
-        {% else %}
-            <div class="row g-3">
-                {% for product in products %}
-                    <div class="col-6 col-md-4 col-lg-3">
-                        {% include 'home/_product_item.html.twig' with {'product': product} %}
-                    </div>
+                <li><hr class="my-2"></li>
+                {% for cat in categorys %}
+                    <li class="mb-2">
+                        {% include 'home/_category_item.html.twig' with {'category': cat, 'categoryId': categoryId} %}
+                    </li>
                 {% endfor %}
+            </ul>
+        </aside>
+
+        {# Products section #}
+        <main class="col-12 col-md-6 col-lg-7 p-4 overflow-auto">
+            <h1 class="h4 fw-bold mb-4">Produits</h1>
+
+            {% if isAllProducts is defined and isAllProducts %}
+                {% if isAllProducts is defined and isAllProducts %}
+                    <div class="mb-3">
+                        <input type="text" id="search-products" placeholder="Rechercher un produit..."
+                            class="form-control">
+                    </div>
+                    <script src="{{ asset('assets/js/all-products.js') }}"></script>
+                {% endif %}
+            {% endif %}
+
+            {% if products is empty %}
+                <p class="text-muted">Aucun produit disponible.</p>
+            {% else %}
+                <div class="row row-cols-2 row-cols-sm-3 row-cols-md-3 row-cols-lg-4 g-3">
+                    {% for product in products %}
+                        <div class="col d-flex">
+                            {% include 'home/_product_item.html.twig' with {'product': product} %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </main>
+
+        {# Cart section #}
+        <aside class="col-12 col-md-3 col-lg-3 bg-white border-start p-4 d-flex flex-column">
+            <h2 class="h5 fw-bold mb-3 border-bottom pb-2">Mon Panier</h2>
+
+            {# List of products in the cart #}
+            <div id="cart-items" class="flex-grow-1 overflow-auto mb-3"></div>
+
+            {# Total + payment button #}
+            <div class="border-top pt-3">
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="fw-bold fs-5">Total :</span>
+                    <span id="cart-total" class="fw-bold fs-5">0,00 €</span>
+                </div>
+                <button id="checkout-button" class="btn btn-success w-100 fw-bold">
+                    Passer au paiement
+                </button>
             </div>
-        {% endif %}
-    </main>
+        </aside>
 
-    {# Cart section #}
-    <aside class="col-3 bg-white border-start p-4 d-flex flex-column">
-        <h2 class="h5 fw-bold mb-3 border-bottom pb-2">Mon Panier</h2>
-
-        {# List of products in the cart #}
-        <div id="cart-items" class="flex-grow-1 overflow-auto mb-3">
-        </div>
-
-        {# Total + payment button #}
-        <div class="border-top pt-3">
-            <div class="d-flex justify-content-between mb-3">
-                <span class="fw-bold fs-5">Total :</span>
-                <span id="cart-total" class="fw-bold fs-5">0,00 €</span>
-            </div>
-            <button id="checkout-button" class="btn btn-success w-100 fw-bold">
-                Passer au paiement
-            </button>
-        </div>
-    </aside>
+    </div>
 </div>
 
 {# Modals #}
 {% include 'modal/_product_modal.html.twig' %}
 {% include 'modal/_payment_modal.html.twig' %}
 
-
-
 {% if isAllProducts is defined and isAllProducts %}
     <script>
         const allProducts = {{ products|json_encode|raw }};
     </script>
 {% endif %}
-
-
 {% endblock %}
-

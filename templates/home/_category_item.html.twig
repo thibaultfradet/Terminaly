@@ -1,5 +1,5 @@
 {# category_item_plus.html.twig #}
-<a href="{{ path('app_home', { categoryId: category.id }) }}"
+<a href="{{ path('app_home', { filter: category.id }) }}"
    class="d-flex flex-column align-items-center bg-white shadow rounded-3 p-3 text-decoration-none
           {% if category.id == categoryId %}border border-primary{% endif %}">
     
