@@ -54,12 +54,12 @@ class DashboardController extends AbstractDashboardController
     {
         $now = new \DateTime();
 
-        // get month from query param or fallback to current
         $selectedMonth = $request->query->getInt('month', (int) $now->format('n'));
         $year = (int) $now->format('Y');
 
         $startOfMonth = new \DateTimeImmutable("$year-$selectedMonth-01 00:00:00");
-        $endOfMonth = $startOfMonth->modify('last day of this month')->setTime(23,59,59);
+        $daysInMonth = (int) $startOfMonth->format('t'); // nombre de jours dans le mois
+        $endOfMonth = $startOfMonth->modify("last day of this month 23:59:59");
 
         $sales = $this->saleRepository->createQueryBuilder('s')
             ->andWhere('s.createdAt BETWEEN :start AND :end')
@@ -68,37 +68,34 @@ class DashboardController extends AbstractDashboardController
             ->getQuery()
             ->getResult();
 
-        $totalSales = count($sales);
-        $totalAmount = array_reduce($sales, fn($carry, $sale) => $carry + $sale->getTotal(), 0);
-
-        // revenue per day in selected month
-        $daily = [];
-        foreach ($sales as $sale) {
-            $day = $sale->getCreatedAt()->format('Y-m-d');
-            if (!isset($daily[$day])) {
-                $daily[$day] = 0;
-            }
-            $daily[$day] += $sale->getTotal();
+        // Initialisation des arrays avec 0 pour chaque jour
+        $dailyRevenue = [];
+        for ($d = 1; $d <= $daysInMonth; $d++) {
+            $dayKey = sprintf('%02d', $d); // ex: '01', '02', ...
+            $dailyRevenue[$dayKey] = 0;
         }
 
-        $months = [
-            1 => 'Janvier', 2 => 'Février', 3 => 'Mars',
-            4 => 'Avril', 5 => 'Mai', 6 => 'Juin',
-            7 => 'Juillet', 8 => 'Août', 9 => 'Septembre',
-            10 => 'Octobre', 11 => 'Novembre', 12 => 'Décembre',
-        ];
+        // Somme des ventes par jour
+        foreach ($sales as $sale) {
+            $day = $sale->getCreatedAt()->format('d');
+            $dailyRevenue[$day] += $sale->getTotal();
+        }
 
+        // Préparation pour Chart.js
         return $this->render('admin/statistiques.html.twig', [
-            'totalSales' => $totalSales,
-            'totalAmount' => $totalAmount,
-            'dailyRevenue' => $daily,
-            'dailyRevenueValues' => array_values($daily),
-            'dailyRevenueLabels' => array_keys($daily),
-            'months' => $months,
-            'currentMonth' => $selectedMonth, 
+            'totalSales' => count($sales),
+            'totalAmount' => array_sum($dailyRevenue),
+            'dailyRevenueLabels' => array_keys($dailyRevenue),
+            'dailyRevenueValues' => array_values($dailyRevenue),
+            'months' => [
+                1 => 'Janvier', 2 => 'Février', 3 => 'Mars',
+                4 => 'Avril', 5 => 'Mai', 6 => 'Juin',
+                7 => 'Juillet', 8 => 'Août', 9 => 'Septembre',
+                10 => 'Octobre', 11 => 'Novembre', 12 => 'Décembre',
+            ],
+            'currentMonth' => $selectedMonth,
         ]);
     }
-
 
 
 
@@ -185,7 +182,7 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToRoute('Statistiques', 'fas fa-chart-bar', 'admin_statistiques');
-        yield MenuItem::linkToCrud('Products', 'fas fa-bread-slice', Product::class);
+        yield MenuItem::linkToCrud('Produits', 'fas fa-bread-slice', Product::class);
         yield MenuItem::linkToCrud('Categories', 'fas fa-list', Category::class);
     }
 

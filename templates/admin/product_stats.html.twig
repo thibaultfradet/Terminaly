@@ -1,0 +1,128 @@
+{# templates/admin/product_stats.html.twig #}
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">
+        Statistiques — <span class="fw-bold">{{ product.name }}</span>
+    </h1>
+
+    <!-- Cards résumé -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-0 bg-light">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Total ventes</h6>
+                    <h3 class="fw-bold text-dark">{{ totalSalesCount }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-0 bg-light">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Chiffre généré</h6>
+                    <h3 class="fw-bold text-success">{{ totalRevenue|number_format(2, '.', ' ') }} €</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Sélection du mois - correct #}
+<div class="mb-4">
+    <label for="month" class="form-label fw-semibold me-2">Mois :</label>
+    <select id="month" class="form-select w-auto d-inline-block"
+            onchange="window.location.href = this.options[this.selectedIndex].dataset.url;">
+        {% for num, name in months %}
+            {% set url = path('admin_product_stats', {'id': product.id, 'month': num}) %}
+            <option value="{{ num }}"
+                    data-url="{{ url }}"
+                    {% if currentMonth == num %}selected{% endif %}>
+                {{ name }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+    <!-- Graphiques -->
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white fw-semibold">
+                    <i class="fa fa-chart-line me-2"></i>Nombre de ventes par jour
+                </div>
+                <div class="card-body bg-body-tertiary">
+                    <canvas id="salesChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-success text-white fw-semibold">
+                    <i class="fa fa-euro-sign me-2"></i>Chiffre généré (€) par jour
+                </div>
+                <div class="card-body bg-body-tertiary">
+                    <canvas id="revenueChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const chartOptions = {
+    responsive: true,
+    plugins: {
+        legend: {
+            labels: { color: getComputedStyle(document.body).getPropertyValue('--bs-body-color') }
+        }
+    },
+    scales: {
+        x: {
+            ticks: { color: getComputedStyle(document.body).getPropertyValue('--bs-body-color') },
+            grid: { color: 'rgba(0,0,0,0.05)' }
+        },
+        y: {
+            beginAtZero: true,
+            ticks: { color: getComputedStyle(document.body).getPropertyValue('--bs-body-color') },
+            grid: { color: 'rgba(0,0,0,0.05)' }
+        }
+    }
+};
+
+new Chart(document.getElementById('salesChart'), {
+    type: 'bar',
+    data: {
+        labels: {{ dailySalesLabels|json_encode|raw }},
+        datasets: [{
+            label: 'Nombre de ventes',
+            data: {{ dailySalesValues|json_encode|raw }},
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1,
+            borderRadius: 3
+        }]
+    },
+    options: chartOptions
+});
+
+new Chart(document.getElementById('revenueChart'), {
+    type: 'bar',
+    data: {
+        labels: {{ dailySalesLabels|json_encode|raw }},
+        datasets: [{
+            label: 'Chiffre généré (€)',
+            data: {{ dailyRevenueValues|json_encode|raw }},
+            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+            borderRadius: 3
+        }]
+    },
+    options: chartOptions
+});
+</script>
+{% endblock %}
