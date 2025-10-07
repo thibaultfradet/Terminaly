@@ -1,83 +1,42 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
 {% block content %}
-<div class="w-100">
-    <h1 class="text-2xl font-bold mb-4">Bienvenue dans le back-office Boulangerie 🥖</h1>
+<div class="container py-4">
+    <h1 class="mb-4">Bienvenue dans le back-office 🥖</h1>
 
-    <!-- Cards -->
-    <div class="row mb-4">
-        <div class="col-md-3 border p-3 text-white bg-dark me-2">
-            <h4>Total ventes</h4>
-            <p class="fs-3">{{ totalSales }}</p>
+    <div class="row g-4">
+        <!-- Statistiques -->
+        <div class="col-md-4">
+            <div class="card ea-bg-card rounded-3 shadow-sm h-100 text-center p-3">
+                <h5 class="card-title mb-2">Statistiques</h5>
+                <p class="card-text mb-3">Consultez les ventes et le chiffre d’affaires</p>
+                <div class="align-items-center">
+                    <a href="{{ statistiquesUrl }}" class="btn btn-outline-light border-1">Accéder</a>
+                </div>
+            </div>
         </div>
-        <div class="col-md-3 border p-3 text-white bg-dark">
-            <h4>Montant total</h4>
-            <p class="fs-3">{{ totalAmount|number_format(2, '.', ',') }} €</p>
+
+        <!-- product -->
+        <div class="col-md-4">
+            <div class="card ea-bg-card rounded-3 shadow-sm h-100 text-center p-3">
+                <h5 class="card-title mb-2">Produits</h5>
+                <p class="card-text mb-3">Gérer les produits</p>
+                <div class="align-items-center">
+                    <a href="{{ productCrudUrl }}" class="btn btn-outline-light">Accéder</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- categorys -->
+        <div class="col-md-4">
+            <div class="card ea-bg-card rounded-3 shadow-sm h-100 text-center p-3">
+                <h5 class="card-title mb-2">Catégories</h5>
+                <p class="card-text mb-3">Gérer les catégories</p>
+                <div class="align-items-center">
+                    <a href="{{ categoryCrudUrl }}" class="btn btn-outline-light">Accéder</a>
+                </div>
+            </div>
         </div>
     </div>
-
-    <!-- Sélection du mois -->
-    <form method="get" class="mb-3">
-        <label for="month">Mois :</label>
-        <select name="month" id="month" onchange="this.form.submit()">
-            {% for num, name in months %}
-                <option value="{{ num }}" {% if currentMonth == num %}selected{% endif %}>{{ name }}</option>
-            {% endfor %}
-        </select>
-    </form>
-
-    <!-- Chart recettes par jour -->
-<div class="d-flex justify-content-start mb-4">
-    <div class="w-50">
-        <canvas id="revenueChart" class="bg-dark p-3 rounded w-100"></canvas>
-    </div>
 </div>
-</div>
-
-<!-- Chart.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const data = {
-        labels: {{ dailyRevenueLabels|json_encode|raw }},
-        datasets: [{
-            label: 'Recette par jour',
-            data: {{ dailyRevenueValues|json_encode|raw }},
-            backgroundColor: 'rgba(75, 192, 192, 0.5)',
-        }]
-    };
-</script>
-<script>
-const ctx = document.getElementById('revenueChart').getContext('2d');
-
-const revenueChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: {{ dailyRevenueLabels|json_encode|raw }},
-        datasets: [{
-            label: 'Recette (€)',
-            data: {{ dailyRevenueValues|json_encode|raw }},
-            backgroundColor: 'rgba(255, 255, 255, 0.7)',
-            borderColor: 'rgba(255, 255, 255, 1)',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            x: { 
-                ticks: { color: 'white' },
-                grid: { color: 'rgba(255,255,255,0.1)' }
-            },
-            y: {
-                beginAtZero: true,
-                ticks: { color: 'white' },
-                grid: { color: 'rgba(255,255,255,0.1)' }
-            }
-        },
-        plugins: {
-            legend: { labels: { color: 'white' } }
-        }
-    }
-});
-</script>
 {% endblock %}
