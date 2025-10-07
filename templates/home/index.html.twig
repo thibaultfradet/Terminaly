@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Boutique{% endblock %}
 
 {% block body %}
 
@@ -75,8 +75,9 @@
 </div>
 
 {# Modals #}
-{% include 'modal/_product.html.twig' %}
-{% include 'modal/_payment.html.twig' %}
+{% include 'modal/_product_modal.html.twig' %}
+{% include 'modal/_payment_modal.html.twig' %}
+
 
 
 {% if isAllProducts is defined and isAllProducts %}
