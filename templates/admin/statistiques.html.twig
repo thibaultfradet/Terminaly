@@ -2,7 +2,6 @@
 
 {% block content %}
 
-
 <!-- JS -->
 <script src="/assets/js/jquery-3.7.1.min.js"></script>
 <script src="/assets/js/chart-js-4.5.0.js"></script>
@@ -28,71 +27,106 @@
 
     <!-- Sélection du mois -->
     <div class="mb-4">
-    <label for="month" class="form-label fw-semibold me-2">{{ 'Mois'|trans }} :</label>
-    <select id="month" class="form-select w-auto d-inline-block"
-            onchange="window.location.href = this.options[this.selectedIndex].dataset.url;">
-        {% for num, name in months %}
-            {% set url = path('admin_statistiques', {'id': num, 'month': num}) %}
-            <option value="{{ num }}"
-                    data-url="{{ url }}"
-                    {% if currentMonth == num %}selected{% endif %}>
-                {{ name|trans }}
-            </option>
-        {% endfor %}
-    </select>
-</div>
-
-    <div class="container">
-    <div class="row justify-content-start mb-3">
-        <div class="col-6">
-            <!-- Chart title with month -->
-            <h3 class="text-white">
-                {{ 'Recettes du mois de'|trans }} {{ months[currentMonth]|trans }}
-            </h3>
-        </div>
+        <label for="month" class="form-label fw-semibold me-2">{{ 'Mois'|trans }} :</label>
+        <select id="month" class="form-select w-auto d-inline-block"
+                onchange="window.location.href = this.options[this.selectedIndex].dataset.url;">
+            {% for num, name in months %}
+                {% set url = path('admin_statistiques', {'id': num, 'month': num}) %}
+                <option value="{{ num }}"
+                        data-url="{{ url }}"
+                        {% if currentMonth == num %}selected{% endif %}>
+                    {{ name|trans }}
+                </option>
+            {% endfor %}
+        </select>
     </div>
 
-    <div class="row justify-content-start">
-        <div class="col-6" style="height: 500px;">
-            <canvas id="revenueChart"></canvas>
+    <!-- Graphiques côte à côte -->
+    <div class="container">
+        <div class="row justify-content-start mb-3">
+            <div class="col-6">
+                <h3 class="text-white">{{ 'Recettes par jour'|trans }} - {{ months[currentMonth]|trans }}</h3>
+            </div>
+            <div class="col-6">
+                <h3 class="text-white">{{ 'Moyenne quotidienne'|trans }} - {{ months[currentMonth]|trans }}</h3>
+            </div>
+        </div>
+
+        <div class="row justify-content-start">
+            <!-- Bar chart à gauche -->
+            <div class="col-6" style="height: 500px;">
+                <canvas id="barChart"></canvas>
+            </div>
+
+            <!-- Line chart à droite -->
+            <div class="col-6" style="height: 500px;">
+                <canvas id="lineChart"></canvas>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-const ctx = document.getElementById('revenueChart').getContext('2d');
+// Récupération et formatage des données
+const dailyLabels = {{ dailyRevenueLabels|json_encode|raw }}.map(String); // force strings
+const dailyValues = {{ dailyRevenueValues|json_encode|raw }}.map(Number); // force numbers
 
-new Chart(ctx, {
+// Calcul de la moyenne quotidienne pour le line chart
+const avg = dailyValues.reduce((a, b) => a + b, 0) / dailyValues.length;
+const averageLine = Array(dailyValues.length).fill(avg);
+
+// Bar Chart
+const barCtx = document.getElementById('barChart').getContext('2d');
+new Chart(barCtx, {
     type: 'bar',
     data: {
-        labels: {{ dailyRevenueLabels|json_encode|raw }},
+        labels: dailyLabels,
         datasets: [{
             label: '{{ "Recette (€)"|trans }}',
-            data: {{ dailyRevenueValues|json_encode|raw }},
-            backgroundColor: 'rgba(0, 51, 102, 0.8)', // dark blue
+            data: dailyValues,
+            backgroundColor: 'rgba(0, 51, 102, 0.8)',
             borderColor: 'rgba(0, 51, 102, 1)',
             borderWidth: 1,
-            hoverBackgroundColor: 'rgba(0, 51, 102, 1)' // effect on hover
+            hoverBackgroundColor: 'rgba(0, 51, 102, 1)'
         }]
     },
     options: {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-            x: { 
-                ticks: { color: 'white' },
-                grid: { color: 'rgba(255,255,255,0.1)' }
-            },
-            y: {
-                beginAtZero: true,
-                ticks: { color: 'white' },
-                grid: { color: 'rgba(255,255,255,0.1)' }
-            }
+            x: { ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+            y: { beginAtZero: true, ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } }
         },
-        plugins: {
-            legend: { labels: { color: 'white' } }
-        }
+        plugins: { legend: { labels: { color: 'white' } } }
+    }
+});
+
+// Line Chart
+const lineCtx = document.getElementById('lineChart').getContext('2d');
+new Chart(lineCtx, {
+    type: 'line',
+    data: {
+        labels: dailyLabels,
+        datasets: [{
+            label: '{{ "Moyenne (€)"|trans }}',
+            data: averageLine,
+            borderColor: 'white',
+            borderWidth: 2,
+            fill: false,
+            tension: 0.3,
+            pointBackgroundColor: 'white'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            x: { ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+            y: { beginAtZero: true, ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+        },
+        plugins: { legend: { labels: { color: 'white' } } }
     }
 });
 </script>
+
 {% endblock %}

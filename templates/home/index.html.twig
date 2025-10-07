@@ -7,9 +7,7 @@
     <div class="row h-100 gx-0">
 
         {# Sidebar categories #}
-        <aside class="col-12 col-md-3 col-lg-2 bg-white border-end p-3 overflow-auto">
-            <h2 class="h5 fw-bold mb-4">Catégories</h2>
-            <ul class="list-unstyled">
+            <aside class="col-12 col-md-3 col-lg-2 bg-white border-end p-3 d-flex flex-column h-100 overflow-auto">            <ul class="list-unstyled">
                 <li class="mb-2">
                     <a href="{{ path('app_home', {'filter': 'all'}) }}" 
                        class="d-block px-3 py-2 rounded fw-semibold text-primary text-decoration-none bg-opacity-10 hover-bg-light">
