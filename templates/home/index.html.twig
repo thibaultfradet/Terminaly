@@ -2,73 +2,137 @@
 
 {% block title %}Boutique{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Ensure scrollable areas work correctly inside flex containers */
+        .product-grid-container,
+        #cart-items {
+            flex-grow: 1;
+            min-height: 0;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Ghost/fade effect to indicate more content */
+        .product-grid-container::after,
+        #cart-items::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+            pointer-events: none;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-<div class="container-fluid vh-100 bg-light">
-    <div class="row h-100 gx-0">
+<div class="page-wrapper d-flex flex-column h-100">
+    <div class="row g-3 h-100">
+        {# LEFT SECTION: Products #}
+        <div class="col-12 col-lg-8 d-flex flex-column h-100">
+            <div class="card p-3 shadow-sm d-flex flex-column h-100">
 
-        {# Sidebar categories #}
-            <aside class="col-12 col-md-3 col-lg-2 bg-white border-end p-3 d-flex flex-column h-100 overflow-auto">            <ul class="list-unstyled">
-                <li class="mb-2">
-                    <a href="{{ path('app_home', {'filter': 'all'}) }}" 
-                       class="d-block px-3 py-2 rounded fw-semibold text-primary text-decoration-none bg-opacity-10 hover-bg-light">
-                        🛒 Tous les produits
-                    </a>
-                </li>
-                <li><hr class="my-2"></li>
-                {% for cat in categorys %}
-                    <li class="mb-2">
-                        {% include 'home/_category_item.html.twig' with {'category': cat, 'categoryId': categoryId} %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </aside>
-
-        {# Products section #}
-        <main class="col-12 col-md-6 col-lg-7 p-4 overflow-auto">
-            <h1 class="h4 fw-bold mb-4">Produits</h1>
-
-            {% if isAllProducts is defined and isAllProducts %}
-                {% if isAllProducts is defined and isAllProducts %}
-                    <div class="mb-3">
-                        <input type="text" id="search-products" placeholder="Rechercher un produit..."
-                            class="form-control">
+                {# Top bar with burger menu + date (left) and time (right) #}
+                <div class="d-flex align-items-center justify-content-between mb-3 flex-shrink-0">
+                    <div class="d-flex align-items-center gap-3">
+                        <button class="btn btn-icon" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                        <div class="fs-5 fw-semibold" id="current-date"></div>
                     </div>
-                    <script src="{{ asset('assets/js/all-products.js') }}"></script>
-                {% endif %}
-            {% endif %}
+                    <div class="fs-5 fw-semibold" id="current-time"></div>
+                </div>
 
-            {% if products is empty %}
-                <p class="text-muted">Aucun produit disponible.</p>
-            {% else %}
-                <div class="row row-cols-2 row-cols-sm-3 row-cols-md-3 row-cols-lg-4 g-3">
-                    {% for product in products %}
-                        <div class="col d-flex">
-                            {% include 'home/_product_item.html.twig' with {'product': product} %}
+                <hr class="mt-0 mb-3">
+
+                {# Categories horizontal scroll #}
+                <div class="mb-3 flex-shrink-0" style="overflow-x: auto; white-space: nowrap;">
+                    <div class="d-flex gap-3">
+                        <a href="{{ path('app_home', { filter: 'all' }) }}"
+                        class="d-flex flex-column align-items-center text-decoration-none flex-shrink-0 px-3 rounded-3">
+                            <div class="d-flex justify-content-center align-items-center bg-secondary rounded-circle mb-2"
+                                style="width:60px; height:60px;">
+                                {{ ux_icon('qlementine-icons:menu-burger-16', { class: 'fs-4 text-white p-2' }) }}
+                            </div>
+                            <span class="fw-bold text-dark text-center">{{ "Tous les produits" }}</span>
+                        </a>
+                        {% for cat in categorys %}
+                            {% include 'home/_category_item.html.twig' with {'category': cat, 'categoryId': categoryId, 'horizontal': true} %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {# Search bar #}
+                <div class="input-icon mb-4 flex-shrink-0">
+                    <input type="text" id="search-products" class="form-control" placeholder="Rechercher un produit...">
+                    <span class="input-icon-addon">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <circle cx="10" cy="10" r="7" />
+                            <line x1="21" y1="21" x2="15" y2="15" />
+                        </svg>
+                    </span>
+                </div>
+
+                {# Product grid scrollable #}
+                <div class="product-grid-container flex-grow-1" style="min-height:0;">
+                    {% if products is empty %}
+                        <p class="text-center text-muted">Aucun produit disponible.</p>
+                    {% else %}
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
+                            {% for product in products %}
+                                <div class="col">
+                                    {% include 'home/_product_item.html.twig' with {'product': product} %}
+                                </div>
+                            {% endfor %}
                         </div>
-                    {% endfor %}
+                    {% endif %}
                 </div>
-            {% endif %}
-        </main>
 
-        {# Cart section #}
-        <aside class="col-12 col-md-3 col-lg-3 bg-white border-start p-4 d-flex flex-column">
-            <h2 class="h5 fw-bold mb-3 border-bottom pb-2">Mon Panier</h2>
-
-            {# List of products in the cart #}
-            <div id="cart-items" class="flex-grow-1 overflow-auto mb-3"></div>
-
-            {# Total + payment button #}
-            <div class="border-top pt-3">
-                <div class="d-flex justify-content-between mb-3">
-                    <span class="fw-bold fs-5">Total :</span>
-                    <span id="cart-total" class="fw-bold fs-5">0,00 €</span>
-                </div>
-                <button id="checkout-button" class="btn btn-success w-100 fw-bold">
-                    Passer au paiement
-                </button>
             </div>
-        </aside>
+        </div>
 
+        {# RIGHT SECTION: Cart #}
+        <div class="col-12 col-lg-4 d-flex flex-column h-100">
+            <div class="card shadow-sm p-3 d-flex flex-column h-100">
+                {# Header #}
+                <h2 class="h4 mb-3 flex-shrink-0">Mon Panier</h2>
+
+                {# Scrollable items #}
+                <div id="cart-items" class="flex-grow-1">
+                    <!-- Items injected via JS -->
+                </div>
+
+                {# Footer #}
+                <div class="border-top pt-3 mt-3 flex-shrink-0">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fw-bold">Total :</span>
+                        <span id="cart-total" class="fs-5 text-primary">0,00 €</span>
+                    </div>
+                    <button id="checkout-button" class="btn btn-primary w-100">
+                        Passer au paiement
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# SIDEBAR (Offcanvas Tabler) #}
+<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+    <div class="offcanvas-header">
+        <h2 class="offcanvas-title" id="sidebarMenuLabel">Menu</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <p class="text-muted">Contenu du menu à venir...</p>
     </div>
 </div>
 
@@ -77,8 +141,21 @@
 {% include 'modal/_payment_modal.html.twig' %}
 
 {% if isAllProducts is defined and isAllProducts %}
-    <script>
-        const allProducts = {{ products|json_encode|raw }};
-    </script>
+<script>
+    const allProducts = {{ products|json_encode|raw }};
+</script>
 {% endif %}
+
+{# JS to update date and time #}
+<script>
+function updateDateTime() {
+    const now = new Date();
+    const date = now.toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+    document.getElementById('current-date').textContent = date;
+    const time = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('current-time').textContent = time;
+}
+updateDateTime();
+setInterval(updateDateTime, 60000);
+</script>
 {% endblock %}

@@ -9,22 +9,23 @@
     
    {% block stylesheets %}
       {{ encore_entry_link_tags('app') }}
-      <link href="{{ asset('assets/styles/bootstrap-5.3.8.min.css') }}" rel="stylesheet">        
+      <link href="{{ asset('assets/styles/tabler.min.css') }}" rel="stylesheet">        
     {% endblock %}
 
      {% block javascripts %}
         {{ encore_entry_script_tags('app') }}
-          <script src="{{ asset('assets/js/bootstrap-5.3.8.min.js') }}"></script>
+          <script src="{{ asset('assets/js/tabler.min.js') }}"></script>
           <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
           <script src="{{ asset('assets/js/cart.js') }}"></script>
           <script src="{{ asset('assets/js/product-modal.js') }}"></script>
           <script src="{{ asset('assets/js/payment-modal.js') }}"></script>
+          <script src="{{ asset('assets/js/search-product.js') }}"></script>
     {% endblock %}
     
   </head>
   <body >
-     <div class="page">
-        <div class="page-wrapper">
+     <div class="page" style="max-height: 95vh; height: 95vh;">
+        <div class="page-wrapper d-flex flex-column h-100">
           <div class="container">
             {% for label, messages in app.flashes %}
               {% for message in messages %}

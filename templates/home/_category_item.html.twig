@@ -1,11 +1,15 @@
-{# category_item_plus.html.twig #}
 <a href="{{ path('app_home', { filter: category.id }) }}"
-   class="d-flex flex-column align-items-center bg-white shadow rounded-3 p-3 text-decoration-none
-          {% if category.id == categoryId %}border border-primary{% endif %}">
-    
-    <img src="{{ asset('img/categorys/' ~ category_path) }}"
-         alt="{{ category.name }}"
-         class="img-fluid rounded mb-2" style="width:80px; height:80px; object-fit:cover;">
-         
-    <span class="fw-semibold text-dark">{{ category.name }}</span>
+   class="d-flex flex-column align-items-center text-decoration-none flex-shrink-0 px-3
+          {% if category.id == categoryId %} rounded-3{% endif %}">
+
+    {# Circle with category icon using Symfony UX #}
+    <div class="d-flex justify-content-center align-items-center bg-secondary rounded-circle mb-2"
+         style="width:60px; height:60px;">
+        {% if category.icon is defined %}
+          {{ ux_icon(category.icon, { class: 'fs-4 text-white p-2' }) }}   
+        {% endif %}
+    </div>
+
+    {# Category name #}
+    <span class="fw-bold text-dark text-center">{{ category.name }}</span>
 </a>
