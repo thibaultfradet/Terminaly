@@ -1,30 +1,53 @@
-// payment-modal.js
-document.addEventListener("DOMContentLoaded", () => {
-    const payModalElement = document.getElementById("checkout-modal");
-    if (!payModalElement) return;
+// payment-modal.js (jQuery version, working with "Owing")
+$(document).ready(function () {
+    // Select the modal element with jQuery
+    const $payModal = $("#checkout-modal");
 
-    const payModal = new bootstrap.Modal(payModalElement);
-    const checkoutButton = document.getElementById("checkout-button");
-    const confirmPaymentButton = document.getElementById("confirm-pay");
-    const paymentCards = document.querySelectorAll(".payment-card");
-    const paymentSelectionStep = document.querySelector(".payment-selection");
-    const cashStep = document.querySelector(".cash-step");
-    const confirmStep = document.querySelector(".confirm-step");
-    const cashAmountInput = document.getElementById("cash-amount");
-    const cashNextButton = document.getElementById("cash-next");
-    const confirmMethodText = document.querySelector(".confirm-method");
-    const confirmAmountText = document.querySelector(".confirm-amount");
+    // Initialize the Bootstrap modal with explicit config
+    const payModal = new bootstrap.Modal($payModal[0], {
+        backdrop: true,  // ensures _config.backdrop exists
+        keyboard: true
+    });
+    const $checkoutButton = $("#checkout-button");
+    const $confirmPaymentButton = $("#confirm-pay");
+
+    const $paymentSelectionStep = $(".payment-selection");
+    const $cashStep = $(".cash-step");
+    const $owingStep = $(".owing-step");
+    const $confirmStep = $(".confirm-step");
+
+    const $cashAmountInput = $("#cash-amount");
+    const $cashNextButton = $("#cash-next");
+
+    const $owingNextButton = $("#owing-next");
+    const $owingClientNameInput = $("#owing-client-name");
+
+    const $confirmMethodText = $(".confirm-method");
+    const $confirmAmountText = $(".confirm-amount");
 
     let selectedMethod = null;
+    let owingClientName = "";
 
-    // Function to handle payment via AJAX
-    function processPayment(paymentType) {
-        const cart = getCart(); // get cart from localStorage
+    const paymentTypeLabels = {
+        card: "Carte",
+        cash: "Espèce",
+        check: "Chèque",
+        owing: "Dû"
+    };
+
+    function processPayment(paymentType, extraData = {}) {
+        const cart = getCart();
         if (!cart || Object.keys(cart).length === 0) return;
 
+        if (paymentType === "owing") {
+            extraData.clientName = owingClientName;
+            extraData.owingCompleted = false;
+        }
+
         const dataToSend = {
-            paymentType: paymentType,
-            cart: cart
+            paymentType: paymentType, // 'card', 'cash', 'check', 'owing'
+            cart: cart,
+            ...extraData
         };
 
         $.ajax({
@@ -32,78 +55,102 @@ document.addEventListener("DOMContentLoaded", () => {
             method: "POST",
             data: JSON.stringify(dataToSend),
             contentType: "application/json",
-            success: function(response) {
-                console.log("Payment processed successfully:", response);
+            success: function (response) {
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error("Error processing payment:", error);
             }
         });
     }
 
-    // Open modal and reset steps
-    checkoutButton.addEventListener("click", () => {
+    // Open modal
+    $checkoutButton.on("click", function () {
         const cart = getCart();
         if (!cart || Object.keys(cart).length === 0) {
             alert("Votre panier est vide.");
             return;
         }
 
-        paymentSelectionStep.classList.remove("d-none");
-        cashStep.classList.add("d-none");
-        confirmStep.classList.add("d-none");
-        cashAmountInput.value = "";
+        $paymentSelectionStep.removeClass("d-none");
+        $cashStep.addClass("d-none");
+        $owingStep.addClass("d-none");
+        $confirmStep.addClass("d-none");
+
+        $cashAmountInput.val("");
+        $owingClientNameInput.val("");
         selectedMethod = null;
 
         payModal.show();
     });
 
-    // Payment method selection
-    paymentCards.forEach(card => {
-        card.addEventListener("click", () => {
-            selectedMethod = card.dataset.method;
+    // Payment selection
+    $(".payment-card").on("click", function () {
+        selectedMethod = $(this).data("method");
 
-            if (!selectedMethod) return;
+        $paymentSelectionStep.addClass("d-none");
+        $cashStep.addClass("d-none");
+        $owingStep.addClass("d-none");
+        $confirmStep.addClass("d-none");
 
-            if (selectedMethod === "cash") {
-                paymentSelectionStep.classList.add("d-none");
-                cashStep.classList.remove("d-none");
-            } else {
-                paymentSelectionStep.classList.add("d-none");
-                confirmStep.classList.remove("d-none");
-
-                confirmMethodText.textContent = `Méthode : ${card.querySelector(".fw-bold").textContent}`;
-                confirmAmountText.textContent = `Montant : ${document.getElementById("cart-total").textContent}`;
-            }
-        });
+        if (selectedMethod === "cash") {
+            $cashStep.removeClass("d-none");
+        } else if (selectedMethod === "owing") {
+            $owingStep.removeClass("d-none");
+        } else {
+            $confirmStep.removeClass("d-none");
+            $confirmMethodText.text(`Méthode : ${paymentTypeLabels[selectedMethod]}`);
+            $confirmAmountText.text(`Montant : ${$("#cart-total").text()}`);
+        }
     });
 
-    // Cash next button
-    cashNextButton.addEventListener("click", () => {
-        const cashReceived = parseFloat(cashAmountInput.value.replace(",", "."));
-        const totalAmount = parseFloat(document.getElementById("cart-total").textContent.replace("€", "").trim().replace(",", "."));
+    // Cash next
+    $cashNextButton.on("click", function () {
+        const cashReceived = parseFloat($cashAmountInput.val().replace(",", "."));
+        const totalAmount = parseFloat($("#cart-total").text().replace("€", "").trim().replace(",", "."));
 
         if (isNaN(cashReceived) || cashReceived < totalAmount) {
             alert("Le montant reçu est insuffisant !");
             return;
         }
 
-        cashStep.classList.add("d-none");
-        confirmStep.classList.remove("d-none");
+        $cashStep.addClass("d-none");
+        $confirmStep.removeClass("d-none");
 
-        confirmMethodText.textContent = `Méthode : Espèces`;
-        confirmAmountText.textContent = `Montant reçu : ${cashReceived.toFixed(2)} € | Total : ${totalAmount.toFixed(2)} € | Rendu : ${(cashReceived - totalAmount).toFixed(2)} €`;
+        $confirmMethodText.text(`Méthode : ${paymentTypeLabels["cash"]}`);
+        $confirmAmountText.text(
+            `Montant reçu : ${cashReceived.toFixed(2)} € | Total : ${totalAmount.toFixed(2)} € | Rendu : ${(cashReceived - totalAmount).toFixed(2)} €`
+        );
+    });
+
+    // Owing next
+    $owingNextButton.on("click", function () {
+        owingClientName = $owingClientNameInput.val().trim();
+
+        if (!owingClientName) {
+            alert("Veuillez entrer le nom du client.");
+            return;
+        }
+
+        $owingStep.addClass("d-none");
+        $confirmStep.removeClass("d-none");
+
+        $confirmMethodText.text(`Méthode : ${paymentTypeLabels["owing"]}`);
+        $confirmAmountText.text(`Client : ${owingClientName} | Montant total : ${$("#cart-total").text()}`);
     });
 
     // Confirm payment
-    confirmPaymentButton.addEventListener("click", () => {
+    $confirmPaymentButton.on("click", function () {
         if (!selectedMethod) return;
 
-        // Call the common function before clearing the cart
         processPayment(selectedMethod);
 
-        clearCart(); // global function from cart.js
+        clearCart();
         payModal.hide();
-        alert("Paiement réussi ! Merci pour votre achat 🥖");
+
+        if (selectedMethod === "owing") {
+            alert(`Vente enregistrée comme dû pour ${owingClientName}.`);
+        } else {
+            alert("Paiement réussi ! Merci pour votre achat 🥖");
+        }
     });
 });

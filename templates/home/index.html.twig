@@ -36,20 +36,6 @@
         <div class="col-12 col-lg-8 d-flex flex-column h-100">
             <div class="card p-3 shadow-sm d-flex flex-column h-100">
 
-                {# Top bar with burger menu + date (left) and time (right) #}
-                <div class="d-flex align-items-center justify-content-between mb-3 flex-shrink-0">
-                    <div class="d-flex align-items-center gap-3">
-                        <button class="btn btn-icon" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
-                        </button>
-                        <div class="fs-5 fw-semibold" id="current-date"></div>
-                    </div>
-                    <div class="fs-5 fw-semibold" id="current-time"></div>
-                </div>
-
                 <hr class="mt-0 mb-3">
 
                 {# Categories horizontal scroll #}
@@ -125,37 +111,16 @@
     </div>
 </div>
 
-{# SIDEBAR (Offcanvas Tabler) #}
-<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
-    <div class="offcanvas-header">
-        <h2 class="offcanvas-title" id="sidebarMenuLabel">Menu</h2>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-        <p class="text-muted">Contenu du menu à venir...</p>
-    </div>
-</div>
-
 {# Modals #}
-{% include 'modal/_product_modal.html.twig' %}
-{% include 'modal/_payment_modal.html.twig' %}
+{% include 'components/_product_modal.html.twig' %}
+{% include 'components/_payment_modal.html.twig' %}
 
+<script src="{{ asset('assets/js/product-modal.js') }}"></script>
+<script src="{{ asset('assets/js/payment-modal.js') }}"></script>
 {% if isAllProducts is defined and isAllProducts %}
 <script>
     const allProducts = {{ products|json_encode|raw }};
 </script>
 {% endif %}
 
-{# JS to update date and time #}
-<script>
-function updateDateTime() {
-    const now = new Date();
-    const date = now.toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
-    document.getElementById('current-date').textContent = date;
-    const time = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    document.getElementById('current-time').textContent = time;
-}
-updateDateTime();
-setInterval(updateDateTime, 60000);
-</script>
 {% endblock %}

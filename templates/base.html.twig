@@ -4,7 +4,6 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <link rel="icon" href="data:,">
     <title>{% block title %}Welcome!{% endblock %}</title>
     
    {% block stylesheets %}
@@ -13,20 +12,23 @@
     {% endblock %}
 
      {% block javascripts %}
-        {{ encore_entry_script_tags('app') }}
-          <script src="{{ asset('assets/js/tabler.min.js') }}"></script>
-          <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
-          <script src="{{ asset('assets/js/cart.js') }}"></script>
-          <script src="{{ asset('assets/js/product-modal.js') }}"></script>
-          <script src="{{ asset('assets/js/payment-modal.js') }}"></script>
-          <script src="{{ asset('assets/js/search-product.js') }}"></script>
-    {% endblock %}
-    
+      
+      <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
+
+      <script src="{{ asset('assets/js/tabler.min.js') }}"></script>
+
+      <script src="{{ asset('assets/js/cart.js') }}"></script>
+      
+      <script src="{{ asset('assets/js/search-product.js') }}"></script>
+  {% endblock %}
+      
   </head>
   <body >
      <div class="page" style="max-height: 95vh; height: 95vh;">
         <div class="page-wrapper d-flex flex-column h-100">
-          <div class="container">
+          {# Top navigation bar #}
+          {% include 'components/top_nav.html.twig' %}
+          <div class="">
             {% for label, messages in app.flashes %}
               {% for message in messages %}
                 {% set bs_class =
