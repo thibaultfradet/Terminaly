@@ -1,0 +1,19 @@
+<div id="modal-owing-details" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style="display: none;">
+    <div class="bg-white rounded-lg w-3/4 max-w-2xl p-6 relative">
+        <h2 class="text-xl font-bold mb-4">Détails de la vente</h2>
+        <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700" id="modal-close">✕</button>
+
+        <div id="modal-content">
+            <table class="min-w-full border border-gray-200 rounded-lg">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Produit</th>
+                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Quantité</th>
+                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Prix</th>
+                    </tr>
+                </thead>
+                <tbody id="modal-items" class="bg-white divide-y divide-gray-200"></tbody>
+            </table>
+        </div>
+    </div>
+</div>

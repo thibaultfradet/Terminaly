@@ -1,7 +1,13 @@
 // payment-modal.js (jQuery version, working with "Owing")
 $(document).ready(function () {
+    // Select the modal element with jQuery
     const $payModal = $("#checkout-modal");
-    const payModal = new bootstrap.Modal($payModal[0]);
+
+    // Initialize the Bootstrap modal with explicit config
+    const payModal = new bootstrap.Modal($payModal[0], {
+        backdrop: true,  // ensures _config.backdrop exists
+        keyboard: true
+    });
     const $checkoutButton = $("#checkout-button");
     const $confirmPaymentButton = $("#confirm-pay");
 
@@ -50,7 +56,6 @@ $(document).ready(function () {
             data: JSON.stringify(dataToSend),
             contentType: "application/json",
             success: function (response) {
-                console.log("Payment processed successfully:", response);
             },
             error: function (xhr, status, error) {
                 console.error("Error processing payment:", error);
