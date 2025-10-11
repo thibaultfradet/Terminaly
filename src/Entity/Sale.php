@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SaleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SaleRepository::class)]
@@ -32,6 +33,12 @@ class Sale
      */
     #[ORM\OneToMany(targetEntity: SaleProduct::class, mappedBy: 'sale')]
     private Collection $saleProducts;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $clientName = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $owingCompleted = null;
 
     public function __construct()
     {
@@ -137,6 +144,30 @@ class Sale
                 $saleProduct->setSale(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getClientName(): ?string
+    {
+        return $this->clientName;
+    }
+
+    public function setClientName(?string $clientName): static
+    {
+        $this->clientName = $clientName;
+
+        return $this;
+    }
+
+    public function isowingCompleted(): ?bool
+    {
+        return $this->owingCompleted;
+    }
+
+    public function setowingCompleted(?bool $owingCompleted): static
+    {
+        $this->owingCompleted = $owingCompleted;
 
         return $this;
     }

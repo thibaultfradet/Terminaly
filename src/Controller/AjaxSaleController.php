@@ -33,6 +33,18 @@ final class AjaxSaleController extends AbstractController
         $sale->setCreatedAt(new \DateTimeImmutable());
         $sale->setPaymentType($paymentType);
 
+        // Handle owing payments
+        if ($paymentType === 'owing') {
+            // If clientName is provided, store it
+            $clientName = $data['clientName'] ?? null;
+            if ($clientName) {
+                $sale->setClientName($clientName); 
+            }
+
+            // Set owingCompleted to false
+            $sale->setOwingCompleted(false); 
+        }
+
         $em->persist($sale);
 
         // Loop through cart to create SaleProduct entries

@@ -1,17 +1,17 @@
-{# Checkout Modal #}
+<!-- Checkout Modal -->
 <div id="checkout-modal" class="modal fade" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded p-4">
 
-            {# Close button #}
+            <!-- Close button -->
             <div class="d-flex justify-content-end">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            {# Title #}
+            <!-- Title -->
             <h2 class="display-6 fw-semibold text-center mb-4">Choisissez votre moyen de paiement</h2>
 
-            {# Step 1: Payment selection #}
+            <!-- Step 1: Payment selection -->
             <div class="d-grid gap-3 payment-selection">
                 <div class="card payment-card text-center p-3 border cursor-pointer" data-method="cash">
                     <div class="bg-gray-200 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width:64px; height:64px;">
@@ -36,16 +36,31 @@
                     <div class="fw-semibold mb-1">Chèque</div>
                     <div class="text-muted small">Paiement en chèque.</div>
                 </div>
+
+                <div class="card payment-card text-center p-3 border cursor-pointer" data-method="owing">
+                    <div class="bg-gray-200 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width:64px; height:64px;">
+                        <span class="display-4">⏳</span>
+                    </div>
+                    <div class="fw-semibold mb-1">Dû</div>
+                    <div class="text-muted small">Le client paie plus tard.</div>
+                </div>
             </div>
 
-            {# Step 2: Cash input #}
+            <!-- Step 2: Cash input -->
             <div class="cash-step d-none text-center mt-3">
                 <h3 class="display-7 fw-semibold mb-2">Montant reçu :</h3>
                 <input id="cash-amount" type="number" min="0" step="0.01" class="form-control mb-3 text-center" placeholder="0.00 €">
                 <button id="cash-next" class="btn btn-primary w-100 fw-semibold">Valider</button>
             </div>
 
-            {# Step 3: Confirmation #}
+            <!-- Step 2b: Owing client name input -->
+            <div class="owing-step d-none text-center mt-3">
+                <h3 class="display-7 fw-semibold mb-2">Nom du client :</h3>
+                <input id="owing-client-name" type="text" class="form-control mb-3 text-center" placeholder="Nom du client">
+                <button id="owing-next" class="btn btn-primary w-100 fw-semibold">Valider</button>
+            </div>
+
+            <!-- Step 3: Confirmation -->
             <div class="confirm-step d-none text-center mt-3">
                 <h3 class="display-7 fw-semibold mb-2">Confirmez le paiement</h3>
                 <p class="confirm-method mb-2"></p>
