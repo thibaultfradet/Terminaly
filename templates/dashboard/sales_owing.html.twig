@@ -27,16 +27,17 @@
                     <td class="px-6 py-4 text-sm text-gray-900">{{ sale.total }}</td>
                     <td class="px-6 py-4 text-sm text-gray-900 space-x-2">
                         <button 
-                            class="px-4 py-2 border border-blue-600 text-blue-600 rounded hover:bg-blue-50 open-modal-btn"
-                            data-sale='{{ sale|json_encode({'only': ['id', 'saleProducts', 'total'], 'saleProducts': {'only': ['product', 'quantity', 'price'], 'product': {'only': ['name']}}}, constant("JSON_HEX_APOS")) }}'>
+                            class="btn btn-primary open-modal-btn"
+                            data-sale='{{ salesData[loop.index0]|json_encode(constant("JSON_HEX_APOS")) }}'>
                             Détails
                         </button>
 
-                        <button 
-                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 complete-btn"
-                            data-sale-id="{{ sale.id }}">
+                        <a 
+                            href="{{ path('admin_sale_owing_completed', {'id': sale.id}) }}" 
+                            class="btn btn-outline-primary"
+                            onclick="return confirm('Voulez-vous vraiment compléter cette vente ?');">
                             Compléter
-                        </button>
+                        </a>
                     </td>
                 </tr>
             {% endfor %}

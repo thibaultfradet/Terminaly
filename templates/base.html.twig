@@ -26,7 +26,9 @@
   <body >
      <div class="page" style="max-height: 95vh; height: 95vh;">
         <div class="page-wrapper d-flex flex-column h-100">
-          <div class="container">
+          {# Top navigation bar #}
+          {% include 'components/top_nav.html.twig' %}
+          <div class="">
             {% for label, messages in app.flashes %}
               {% for message in messages %}
                 {% set bs_class =
@@ -41,8 +43,6 @@
               {% endfor %}
             {% endfor %}
           </div>
-          {# Top navigation bar #}
-          {% include 'components/top_nav.html.twig' %}
           {% block body %}{% endblock %}
         </div>
      </div>

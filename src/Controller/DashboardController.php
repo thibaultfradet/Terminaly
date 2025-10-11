@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\SaleRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,15 +63,13 @@ final class DashboardController extends AbstractController
     }
 
 
-    /**
-     * Display sales that are not completed (owing)
-     */
     #[Route('sales-owing', name: 'admin_sales_owing')]
     public function salesOwing(SaleRepository $saleRepository): Response
     {
         // Fetch sales where payment_type is 'owing'
         $owingSales = $saleRepository->createQueryBuilder('s')
             ->andWhere('s.paymentType = :owing')
+            ->andWhere('s.owingCompleted = false')
             ->setParameter('owing', 'owing')
             ->getQuery()
             ->getResult();
@@ -78,9 +77,51 @@ final class DashboardController extends AbstractController
         // Count of owing sales
         $totalOwing = count($owingSales);
 
+        // Prepare simplified array for JS
+        $salesData = array_map(function($sale) {
+            return [
+                'id' => $sale->getId(),
+                'total' => $sale->getTotal(),
+                'createdAt' => $sale->getCreatedAt()->format('d/m/Y H:i'),
+                'client' => $sale->getClientName(),
+                'saleProducts' => array_map(function($sp) {
+                    return [
+                        'product' => ['name' => $sp->getProduct()->getName()],
+                        'quantity' => $sp->getQuantity(),
+                        'price' => $sp->getPrice(),
+                    ];
+                }, $sale->getSaleProducts()->toArray()), 
+            ];
+        }, $owingSales);
+
         return $this->render('dashboard/sales_owing.html.twig', [
             'owingSales' => $owingSales,
             'totalOwing' => $totalOwing,
+            'salesData' => $salesData, 
         ]);
+    }
+
+    #[Route('/sale/owing-completed/{id}', name: 'admin_sale_owing_completed')]
+    public function completeOwing(
+        int $id, 
+        SaleRepository $saleRepository, 
+        EntityManagerInterface $em
+    ): Response
+    {
+        $sale = $saleRepository->find($id);
+
+        if (!$sale) {
+            $this->addFlash('error', 'Sale not found');
+            return $this->redirectToRoute('admin_sales_owing');
+        }
+
+        $sale->setOwingCompleted(true);
+        $em->persist($sale);
+        $em->flush();
+
+        $this->addFlash('success', 'Vente complétée avec succès');
+
+        // Redirect back to the owing sales page
+        return $this->redirectToRoute('admin_sales_owing');
     }
 }

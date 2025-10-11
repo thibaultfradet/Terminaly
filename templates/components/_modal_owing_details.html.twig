@@ -1,19 +1,26 @@
-<div id="modal-owing-details" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style="display: none;">
-    <div class="bg-white rounded-lg w-3/4 max-w-2xl p-6 relative">
-        <h2 class="text-xl font-bold mb-4">Détails de la vente</h2>
-        <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700" id="modal-close">✕</button>
+<div id="modal-owing-details" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Détails de la vente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-        <div id="modal-content">
-            <table class="min-w-full border border-gray-200 rounded-lg">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Produit</th>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Quantité</th>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Prix</th>
-                    </tr>
-                </thead>
-                <tbody id="modal-items" class="bg-white divide-y divide-gray-200"></tbody>
-            </table>
+            <div class="modal-body">
+                <p class="fs-5 fw-semibold mb-3">Total : <span id="modal-total">0</span> €</p>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th>Quantité</th>
+                            <th>Prix</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modal-items">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
