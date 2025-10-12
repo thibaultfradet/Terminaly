@@ -37,7 +37,7 @@ class GenerateSalesCommand extends Command
 
         $year = 2025;
         $months = [10]; // Août, Septembre, Octobre
-        $totalSales = 400;
+        $totalSales = 1000;
 
         for ($i = 0; $i < $totalSales; $i++) {
             // Choisir un mois aléatoire parmi Août, Septembre, Octobre

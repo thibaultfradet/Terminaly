@@ -89,30 +89,43 @@ final class DashboardController extends AbstractController
         ]);
     }
 
+
+
+
+
+
     #[Route('/weekly-affluence', name: 'admin_weekly_affluence')]
-    public function weeklyAffluence(SaleRepository $saleRepository): Response
+    public function weeklyAffluence(Request $request, SaleRepository $saleRepository): Response
     {
-        $now = new \DateTime();
-        $startOfWeek = (clone $now)->modify('monday this week')->setTime(0, 0, 0);
+         // Get selected date from query or default to today
+        $selectedDate = $request->query->get('date');
+        $date = $selectedDate ? new \DateTime($selectedDate) : new \DateTime();
+
+        // Determine the ISO week and year based on the selected date
+        $week = (int)$date->format('W');
+        $year = (int)$date->format('o');
+
+        // Create Monday (start) and Sunday (end) of that week
+        $startOfWeek = (new \DateTime())->setISODate($year, $week, 1)->setTime(0, 0, 0);
         $endOfWeek = (clone $startOfWeek)->modify('sunday this week 23:59:59');
 
         // Hours from 6:00 to 19:00 (1-hour increments)
         $hours = [];
         $midpoints = [];
         for ($h = 6; $h < 19; $h++) {
-            $hours[] = sprintf('%02d:00', $h);        // start of the hour (used for counting)
-            $midpoints[] = sprintf('%02d:30', $h);    // midpoint (for chart labels)
+            $hours[] = sprintf('%02d:00', $h);        // Start of the hour (used for counting)
+            $midpoints[] = sprintf('%02d:30', $h);    // Midpoint (for chart labels)
         }
 
         $days = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
 
-        // Initialize array
+        // Initialize affluence array
         $affluence = [];
         foreach ($days as $dayName) {
             $affluence[$dayName] = array_fill(0, count($hours), 0);
         }
 
-        // Fetch sales for the week
+        // Fetch sales for the selected week
         $sales = $saleRepository->createQueryBuilder('s')
             ->andWhere('s.createdAt BETWEEN :start AND :end')
             ->setParameter('start', $startOfWeek)
@@ -135,8 +148,13 @@ final class DashboardController extends AbstractController
         return $this->render('dashboard/weekly_affluence.html.twig', [
             'hours' => $midpoints,
             'affluence' => $affluence,
+            'weekNumber' => $week,
+            'selectedDate' => $date->format('Y-m-d'),
+            'year' => $year,
+            'selectedWeek' => sprintf('%d-W%02d', $year, $week),
         ]);
     }
+
 
 
 
@@ -179,6 +197,10 @@ final class DashboardController extends AbstractController
             'salesData' => $salesData, 
         ]);
     }
+
+
+
+
 
     #[Route('/sale/owing-completed/{id}', name: 'admin_sale_owing_completed')]
     public function completeOwing(
