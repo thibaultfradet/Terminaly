@@ -32,6 +32,7 @@ class Category
 
     public function __construct()
     {
+        $this->createdAt = new \DateTimeImmutable();
         $this->price = new ArrayCollection();
     }
 
@@ -101,8 +102,7 @@ class Category
 
     public function setIcon(string $icon): static
     {
-        $this->icon = $icon;
-
+        $this->icon = $icon ? trim($icon) : null;
         return $this;
     }
 }

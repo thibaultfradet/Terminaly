@@ -139,14 +139,8 @@ final class ProductController extends AbstractController
     #[Route('/{id}', name: 'app_product_show', methods: ['GET'])]
     public function show(Product $product): Response
     {
-        $path = '/uploads/products/' . $product->getId() . '_product.png';
-        $imagePath = file_exists($this->getParameter('kernel.project_dir') . '/public' . $path) ? $path : null;
-
-   
-
         return $this->render('product/show.html.twig', [
             'product' => $product,
-            'imagePath' => $imagePath,
         ]);
     }
 

@@ -37,6 +37,10 @@ class Product
     #[ORM\OneToMany(targetEntity: SaleProduct::class, mappedBy: 'product')]
     private Collection $saleProducts;
 
+
+    private ?string $imagePath = null;
+
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -136,5 +140,13 @@ class Product
         }
 
         return $this;
+    }
+
+    public function getImagePath(): ?string
+    {
+        $path = '/uploads/products/' . $this->getId() . '_product.png';
+        $fullPath = __DIR__ . '/../../public' . $path;
+
+        return file_exists($fullPath) ? $path : null;
     }
 }

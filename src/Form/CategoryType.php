@@ -17,10 +17,6 @@ class CategoryType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'Nom',
             ])
-            ->add('createdAt', DateTimeType::class, [
-                'widget' => 'single_text',
-                'label' => 'Créé le',
-            ])
             ->add('icon', TextType::class, [
                 'label' => 'Icône',
             ])

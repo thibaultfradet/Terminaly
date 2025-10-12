@@ -13,8 +13,8 @@
 
     <div class="row justify-content-center">
         <div class="col-lg-8 text-center mb-4">
-            {% if imagePath %}
-                <img src="{{asset(imagePath) }}" alt="{{ product.name }}" class="img-fluid" style="max-width:200px; border-radius:5px;">
+            {% if product.ImagePath %}
+                <img src="{{asset(product.imagePath) }}" alt="{{ product.name }}" class="img-fluid" style="max-width:200px; border-radius:5px;">
             {% endif %}
         </div>
     </div>
