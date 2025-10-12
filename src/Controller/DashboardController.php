@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\SaleRepository;
 use App\Service\DailyStatisticsService;
+use App\Service\MonthlyStatisticsService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -47,57 +48,47 @@ final class DashboardController extends AbstractController
 
 
 
-
-   
-    /**
-     * Custom dashboard statistiques
-     */
-    #[Route('/statistiques', name: 'admin_statistiques')]
-    public function statistiques(Request $request,SaleRepository $saleRepository): Response
-    {
+    #[Route('/monthly-statistiques', name: 'admin_monthly_statistiques')]
+    public function monthlyStatistiques(
+        Request $request,
+        MonthlyStatisticsService $statisticsService
+    ): Response {
         $now = new \DateTime();
 
         $selectedMonth = $request->query->getInt('month', (int) $now->format('n'));
-        $year = (int) $now->format('Y');
+        $selectedYear = $request->query->getInt('year', (int) $now->format('Y'));
 
-        $startOfMonth = new \DateTimeImmutable("$year-$selectedMonth-01 00:00:00");
-        $daysInMonth = (int) $startOfMonth->format('t'); 
-        $endOfMonth = $startOfMonth->modify("last day of this month 23:59:59");
+        // Fetch sales
+        $sales = $statisticsService->getSalesByMonth($selectedMonth, $selectedYear);
 
-        $sales = $saleRepository->createQueryBuilder('s')
-            ->andWhere('s.createdAt BETWEEN :start AND :end')
-            ->setParameter('start', $startOfMonth)
-            ->setParameter('end', $endOfMonth)
-            ->getQuery()
-            ->getResult();
+        // List of months to display in select
+        $months = [
+            1 => 'Janvier', 2 => 'Février', 3 => 'Mars',
+            4 => 'Avril', 5 => 'Mai', 6 => 'Juin',
+            7 => 'Juillet', 8 => 'Août', 9 => 'Septembre',
+            10 => 'Octobre', 11 => 'Novembre', 12 => 'Décembre',
+        ];
 
-        //Initialise array
-        $dailyRevenue = [];
-        for ($d = 1; $d <= $daysInMonth; $d++) {
-            $dayKey = sprintf('%02d', $d); // ex: '01', '02', ...
-            $dailyRevenue[$dayKey] = 0;
-        }
+        // Compute statistics
+        $totalRevenue = $statisticsService->getTotalRevenue($sales);
+        $clientCount = $statisticsService->getClientCount($sales);
+        $categoryStats = $statisticsService->getCategoryStatistics($sales);
+        $dailyTrend = $statisticsService->getMonthlyDailyTrend($sales, $selectedMonth, $selectedYear);
 
-        //sales per day 
-        foreach ($sales as $sale) {
-            $day = $sale->getCreatedAt()->format('d');
-            $dailyRevenue[$day] += $sale->getTotal();
-        }
-
-        return $this->render('dashboard/statistiques.html.twig', [
-            'totalSales' => count($sales),
-            'totalAmount' => array_sum($dailyRevenue),
-            'dailyRevenueLabels' => array_keys($dailyRevenue),
-            'dailyRevenueValues' => array_values($dailyRevenue),
-            'months' => [
-                1 => 'Janvier', 2 => 'Février', 3 => 'Mars',
-                4 => 'Avril', 5 => 'Mai', 6 => 'Juin',
-                7 => 'Juillet', 8 => 'Août', 9 => 'Septembre',
-                10 => 'Octobre', 11 => 'Novembre', 12 => 'Décembre',
-            ],
-            'currentMonth' => $selectedMonth,
+        return $this->render('dashboard/monthly_statistiques.html.twig', [
+            'month' => $selectedMonth,
+            'year' => $selectedYear,
+            'totalRevenue' => $totalRevenue,
+            'clientCount' => $clientCount,
+            'categoryStats' => $categoryStats,
+            'trendLabels' => array_keys($dailyTrend),
+            'trendValues' => array_values($dailyTrend),
+            'months' => $months,
         ]);
     }
+
+
+
 
 
     #[Route('sales-owing', name: 'admin_sales_owing')]

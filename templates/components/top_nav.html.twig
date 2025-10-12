@@ -24,29 +24,29 @@
                 </a>
             </li>
             <li class="mb-2">
-            <a class="d-flex align-items-center justify-content-between text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() starts with '/statistiques' %}bg-light{% endif %}"
-            data-bs-toggle="collapse" href="#statistiquesSubmenu" role="button" aria-expanded="false" aria-controls="statistiquesSubmenu">
-                <div class="d-flex align-items-center gap-2">
-                    {{ ux_icon('mdi:chart-line', { style: 'width:24px; height:24px;' }) }}
-                    Statistiques
+                <a class="d-flex align-items-center justify-content-between text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() starts with '/statistiques' %}bg-light{% endif %}"
+                data-bs-toggle="collapse" href="#statistiquesSubmenu" role="button" aria-expanded="false" aria-controls="statistiquesSubmenu">
+                    <div class="d-flex align-items-center gap-2">
+                        {{ ux_icon('mdi:chart-line', { style: 'width:24px; height:24px;' }) }}
+                        Statistiques
+                    </div>
+                    {{ ux_icon('tabler:chevron-down', { style: 'width:20px; height:20px;' }) }}
+                </a>
+                <div class="collapse {% if app.request.getPathInfo() starts with '/statistiques' %}show{% endif %}" id="statistiquesSubmenu">
+                    <ul class="list-unstyled ps-4 mt-1 mb-0">
+                        <li class="mb-1">
+                            <a href="{{ path('admin_daily_statistiques') }}" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/statistiques/jour' %}bg-light{% endif %}">
+                                Par jour
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('admin_monthly_statistiques') }}" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/statistiques/jour' %}bg-light{% endif %}">
+                                Par mois
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-                {{ ux_icon('tabler:chevron-down', { style: 'width:20px; height:20px;' }) }}
-            </a>
-            <div class="collapse {% if app.request.getPathInfo() starts with '/statistiques' %}show{% endif %}" id="statistiquesSubmenu">
-                <ul class="list-unstyled ps-4 mt-1 mb-0">
-                    <li class="mb-1">
-                        <a href="/statistiques/jour" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/statistiques/jour' %}bg-light{% endif %}">
-                            Par jour
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/statistiques/mois" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/statistiques/mois' %}bg-light{% endif %}">
-                            Par mois
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </li>
+            </li>
             <li class="mb-2">
                 <a href="/sales-owing" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/' %}bg-light{% endif %}">
                     {{ ux_icon('fluent-mdl2:blowing-snow', { style: 'width:24px; height:24px;' }) }}
