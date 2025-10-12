@@ -1,39 +1,59 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Category index{% endblock %}
+{% block title %}Catégories{% endblock %}
 
 {% block body %}
-    <h1>Category index</h1>
+<div class="container my-5">
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>CreatedAt</th>
-                <th>Icon</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for category in categories %}
-            <tr>
-                <td>{{ category.id }}</td>
-                <td>{{ category.name }}</td>
-                <td>{{ category.createdAt ? category.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ category.icon }}</td>
-                <td>
-                    <a href="{{ path('app_category_show', {'id': category.id}) }}">show</a>
-                    <a href="{{ path('app_category_edit', {'id': category.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="row mb-3">
+        <div class="col text-center">
+            <h1 class="fw-bold text-primary mb-5 display-5 text-center">Liste des catégories</h1>
+        </div>
+    </div>
 
-    <a href="{{ path('app_category_new') }}">Create new</a>
+    <div class="row mb-3">
+        <div class="col text-end">
+            <a href="{{ path('app_category_new') }}" class="btn btn-primary">Ajouter une catégorie</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="card shadow-sm">
+                <div class="table-responsive">
+                    <table id="categoryTable" class="table table-hover text-center align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Id</th>
+                                <th>Nom</th>
+                                <th>Créé le</th>
+                                <th>Icône</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for category in categories %}
+                            <tr>
+                                <td>{{ category.id }}</td>
+                                <td>{{ category.name }}</td>
+                                <td>{{ category.createdAt ? category.createdAt|date('d/m/Y H:i:s') : '' }}</td>
+                                <td>{{ category.icon }}</td>
+                                <td class="text-center">
+                                    <a href="{{ path('app_category_show', {'id': category.id}) }}" class="btn btn-outline-primary me-2">Afficher</a>
+                                    <a href="{{ path('app_category_edit', {'id': category.id}) }}" class="btn btn-primary">Modifier</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-muted">Aucun enregistrement trouvé.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
 {% endblock %}

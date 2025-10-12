@@ -1,4 +1,16 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+<div class="card shadow-sm p-4">
+
+    {% for child in form %}
+        <div class="mb-3">
+            {{ form_label(child, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(child, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(child) }}
+        </div>
+    {% endfor %}
+
+    <div class="mt-3 text-center">
+        <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+    </div>
+</div>
 {{ form_end(form) }}

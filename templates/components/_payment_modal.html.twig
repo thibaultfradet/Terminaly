@@ -13,9 +13,14 @@
 
             <!-- Step 1: Payment selection -->
             <div class="d-grid gap-3 payment-selection">
+            <!-- Cart total display -->
+<div class="text-center mb-2">
+    <span class="fs-3">Total du panier : </span>
+    <span id="modal-cart-total" class="fw-bold text-primary fs-3">0.00 €</span>
+</div>
                 <div class="card payment-card text-center p-3 border cursor-pointer" data-method="cash">
                     <div class="bg-gray-200 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width:64px; height:64px;">
-                        <span class="display-4">💵</span>
+                        <span class="display-5">💵</span>
                     </div>
                     <div class="fw-semibold mb-1">Espèces</div>
                     <div class="text-muted small">Paiement en espèce.</div>
@@ -23,7 +28,7 @@
 
                 <div class="card payment-card text-center p-3 border cursor-pointer" data-method="card">
                     <div class="bg-gray-200 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width:64px; height:64px;">
-                        <span class="display-4">💳</span>
+                        <span class="display-5">💳</span>
                     </div>
                     <div class="fw-semibold mb-1">Carte bancaire</div>
                     <div class="text-muted small">Paiement en carte bancaire.</div>
@@ -31,7 +36,7 @@
 
                 <div class="card payment-card text-center p-3 border cursor-pointer" data-method="check">
                     <div class="bg-gray-200 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width:64px; height:64px;">
-                        <span class="display-4">🧾</span>
+                        <span class="display-5">🧾</span>
                     </div>
                     <div class="fw-semibold mb-1">Chèque</div>
                     <div class="text-muted small">Paiement en chèque.</div>
@@ -39,7 +44,7 @@
 
                 <div class="card payment-card text-center p-3 border cursor-pointer" data-method="owing">
                     <div class="bg-gray-200 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width:64px; height:64px;">
-                        <span class="display-4">⏳</span>
+                        <span class="display-5">⏳</span>
                     </div>
                     <div class="fw-semibold mb-1">Dû</div>
                     <div class="text-muted small">Le client paie plus tard.</div>

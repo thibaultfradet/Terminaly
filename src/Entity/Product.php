@@ -39,6 +39,7 @@ class Product
 
     public function __construct()
     {
+        $this->createdAt = new \DateTimeImmutable();
         $this->saleProducts = new ArrayCollection();
     }
 

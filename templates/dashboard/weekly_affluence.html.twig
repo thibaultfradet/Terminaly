@@ -11,42 +11,54 @@
 <div class="container-xl py-4">
   <div class="card shadow-sm">
     <div class="card-body">
-      <canvas id="weeklyAffluenceChart"></canvas>
+      <canvas id="weeklyAffluenceChart" height="120"></canvas>
     </div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+// Get canvas context
 const ctx = document.getElementById('weeklyAffluenceChart');
 
+// Prepare data
 const data = {
-  labels: {{ hours|json_encode|raw }}, // 0 à 23
+  labels: {{ hours|json_encode|raw }},
   datasets: [
     {% for day, values in affluence %}
     {
       label: '{{ day }}',
       data: {{ values|json_encode|raw }},
-      fill: false,
-      borderColor: 'hsl({{ loop.index0 * 50 }}, 70%, 50%)',
-      tension: 0.1
+      backgroundColor: 'hsl({{ loop.index0 * 50 }}, 70%, 60%)',
+      borderColor: 'hsl({{ loop.index0 * 50 }}, 70%, 40%)',
+      borderWidth: 1
     },
     {% endfor %}
   ]
 };
 
+// Create bar chart (non-stacked, side-by-side bars)
 new Chart(ctx, {
-  type: 'line',
+  type: 'bar',
   data: data,
   options: {
     responsive: true,
+    interaction: { mode: 'index', intersect: false },
     plugins: {
-      legend: { display: true },
+      legend: { display: true, position: 'top' },
       tooltip: { mode: 'index', intersect: false }
     },
     scales: {
-      x: { title: { display: true, text: 'Heure de la journée' } },
-      y: { title: { display: true, text: 'Nombre de ventes' }, beginAtZero: true }
+      x: { 
+        title: { display: true, text: 'Heure (milieu de tranche)' },
+        stacked: false, // <-- bars side by side
+        ticks: { maxRotation: 0 }
+      },
+      y: { 
+        title: { display: true, text: 'Nombre de ventes' },
+        beginAtZero: true,
+        stacked: false // <-- disable stacking
+      }
     }
   }
 });

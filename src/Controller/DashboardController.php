@@ -96,13 +96,13 @@ final class DashboardController extends AbstractController
         $startOfWeek = (clone $now)->modify('monday this week')->setTime(0, 0, 0);
         $endOfWeek = (clone $startOfWeek)->modify('sunday this week 23:59:59');
 
-        // Hours from 6:30 to 19:00 in 30-min increments
+        // Hours from 6:00 to 19:00 (1-hour increments)
         $hours = [];
-        for ($h = 6; $h <= 18; $h++) {
-            $hours[] = sprintf('%02d:30', $h);
-            $hours[] = sprintf('%02d:00', $h + 1);
+        $midpoints = [];
+        for ($h = 6; $h < 19; $h++) {
+            $hours[] = sprintf('%02d:00', $h);        // start of the hour (used for counting)
+            $midpoints[] = sprintf('%02d:30', $h);    // midpoint (for chart labels)
         }
-        $hours[] = '19:00'; // last point
 
         $days = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
 
@@ -123,25 +123,23 @@ final class DashboardController extends AbstractController
         // Populate affluence array
         foreach ($sales as $sale) {
             $dayName = $days[(int)$sale->getCreatedAt()->format('N') - 1]; // 1 = Monday
-            $hourFloat = (float)$sale->getCreatedAt()->format('G') + ( (int)$sale->getCreatedAt()->format('i') >= 30 ? 0.5 : 0 );
-            
-            // Only count if between 6.5 and 19
-            if ($hourFloat >= 6.5 && $hourFloat <= 19) {
-                $index = array_search(
-                    sprintf('%02d:%02d', floor($hourFloat), ($hourFloat - floor($hourFloat)) > 0 ? 30 : 0),
-                    $hours
-                );
-                if ($index !== false) {
-                    $affluence[$dayName][$index]++;
-                }
+            $saleHour = (int)$sale->getCreatedAt()->format('H');
+
+            // Only count if between 6:00 and 18:59
+            if ($saleHour >= 6 && $saleHour < 19) {
+                $index = $saleHour - 6;
+                $affluence[$dayName][$index]++;
             }
         }
 
         return $this->render('dashboard/weekly_affluence.html.twig', [
-            'hours' => $hours,
+            'hours' => $midpoints,
             'affluence' => $affluence,
         ]);
     }
+
+
+
 
 
     #[Route('sales-owing', name: 'admin_sales_owing')]

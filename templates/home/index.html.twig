@@ -99,8 +99,8 @@
                 {# Footer #}
                 <div class="border-top pt-3 mt-3 flex-shrink-0">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="fw-bold">Total :</span>
-                        <span id="cart-total" class="fs-5 text-primary">0,00 €</span>
+                        <span class="fw-bold fs-2">Total :</span>
+                        <span id="cart-total" class="fs-2 text-primary">0,00 €</span>
                     </div>
                     <button id="checkout-button" class="btn btn-primary w-100">
                         Passer au paiement
@@ -113,7 +113,7 @@
 
 {# Modals #}
 {% include 'components/_product_modal.html.twig' %}
-{% include 'components/_payment_modal.html.twig' %}
+{% include 'components/_payment_modal_test.html.twig' %}
 
 <script src="{{ asset('assets/js/product-modal.js') }}"></script>
 <script src="{{ asset('assets/js/payment-modal.js') }}"></script>

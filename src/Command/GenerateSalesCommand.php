@@ -36,7 +36,7 @@ class GenerateSalesCommand extends Command
         }
 
         $year = 2025;
-        $months = [8, 9, 10]; // Août, Septembre, Octobre
+        $months = [10]; // Août, Septembre, Octobre
         $totalSales = 400;
 
         for ($i = 0; $i < $totalSales; $i++) {

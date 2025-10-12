@@ -1,13 +1,7 @@
-// payment-modal.js (jQuery version, working with "Owing")
+// payment-modal.js
 $(document).ready(function () {
-    // Select the modal element with jQuery
     const $payModal = $("#checkout-modal");
-
-    // Initialize the Bootstrap modal with explicit config
-    const payModal = new bootstrap.Modal($payModal[0], {
-        backdrop: true,  // ensures _config.backdrop exists
-        keyboard: true
-    });
+    const payModal = new bootstrap.Modal($payModal[0], { backdrop: true, keyboard: true });
     const $checkoutButton = $("#checkout-button");
     const $confirmPaymentButton = $("#confirm-pay");
 
@@ -24,16 +18,12 @@ $(document).ready(function () {
 
     const $confirmMethodText = $(".confirm-method");
     const $confirmAmountText = $(".confirm-amount");
+    const $modalCartTotal = $("#modal-cart-total");
 
     let selectedMethod = null;
     let owingClientName = "";
 
-    const paymentTypeLabels = {
-        card: "Carte",
-        cash: "Espèce",
-        check: "Chèque",
-        owing: "Dû"
-    };
+    const paymentTypeLabels = { card: "Carte", cash: "Espèce", check: "Chèque", owing: "Dû" };
 
     function processPayment(paymentType, extraData = {}) {
         const cart = getCart();
@@ -44,19 +34,14 @@ $(document).ready(function () {
             extraData.owingCompleted = false;
         }
 
-        const dataToSend = {
-            paymentType: paymentType, // 'card', 'cash', 'check', 'owing'
-            cart: cart,
-            ...extraData
-        };
+        const dataToSend = { paymentType: paymentType, cart: cart, ...extraData };
 
         $.ajax({
             url: "/ajax/sale",
             method: "POST",
             data: JSON.stringify(dataToSend),
             contentType: "application/json",
-            success: function (response) {
-            },
+            success: function (response) {},
             error: function (xhr, status, error) {
                 console.error("Error processing payment:", error);
             }
@@ -65,11 +50,22 @@ $(document).ready(function () {
 
     // Open modal
     $checkoutButton.on("click", function () {
-        const cart = getCart();
+        const cart = getCart(); // récupère le panier actuel
         if (!cart || Object.keys(cart).length === 0) {
             alert("Votre panier est vide.");
             return;
         }
+
+        // Compute cart total only if there are items
+        let total = 0;
+        Object.values(cart).forEach(item => {
+            const price = parseFloat(item.price) || 0;
+            const quantity = parseFloat(item.quantity) || 0;
+            total += price * quantity;
+        });
+
+        // Update modal cart total
+        $("#modal-cart-total").text(total.toFixed(2) + " €");
 
         $paymentSelectionStep.removeClass("d-none");
         $cashStep.addClass("d-none");
@@ -99,14 +95,14 @@ $(document).ready(function () {
         } else {
             $confirmStep.removeClass("d-none");
             $confirmMethodText.text(`Méthode : ${paymentTypeLabels[selectedMethod]}`);
-            $confirmAmountText.text(`Montant : ${$("#cart-total").text()}`);
+            $confirmAmountText.text(`Montant : ${$modalCartTotal.text()}`);
         }
     });
 
     // Cash next
     $cashNextButton.on("click", function () {
         const cashReceived = parseFloat($cashAmountInput.val().replace(",", "."));
-        const totalAmount = parseFloat($("#cart-total").text().replace("€", "").trim().replace(",", "."));
+        const totalAmount = parseFloat($modalCartTotal.text().replace("€", "").trim().replace(",", "."));
 
         if (isNaN(cashReceived) || cashReceived < totalAmount) {
             alert("Le montant reçu est insuffisant !");
@@ -135,7 +131,7 @@ $(document).ready(function () {
         $confirmStep.removeClass("d-none");
 
         $confirmMethodText.text(`Méthode : ${paymentTypeLabels["owing"]}`);
-        $confirmAmountText.text(`Client : ${owingClientName} | Montant total : ${$("#cart-total").text()}`);
+        $confirmAmountText.text(`Client : ${owingClientName} | Montant total : ${$modalCartTotal.text()}`);
     });
 
     // Confirm payment
