@@ -70,6 +70,7 @@ final class DashboardController extends AbstractController
         ];
 
         // Compute statistics
+        $totalProductSold = $statisticsService->getTotalProductSold($sales);
         $totalRevenue = $statisticsService->getTotalRevenue($sales);
         $clientCount = $statisticsService->getClientCount($sales);
         $categoryStats = $statisticsService->getCategoryStatistics($sales);
@@ -78,6 +79,7 @@ final class DashboardController extends AbstractController
         return $this->render('dashboard/monthly_statistiques.html.twig', [
             'month' => $selectedMonth,
             'year' => $selectedYear,
+            'totalProductSold' => $totalProductSold,
             'totalRevenue' => $totalRevenue,
             'clientCount' => $clientCount,
             'categoryStats' => $categoryStats,
@@ -87,8 +89,59 @@ final class DashboardController extends AbstractController
         ]);
     }
 
+    #[Route('/weekly-affluence', name: 'admin_weekly_affluence')]
+    public function weeklyAffluence(SaleRepository $saleRepository): Response
+    {
+        $now = new \DateTime();
+        $startOfWeek = (clone $now)->modify('monday this week')->setTime(0, 0, 0);
+        $endOfWeek = (clone $startOfWeek)->modify('sunday this week 23:59:59');
 
+        // Hours from 6:30 to 19:00 in 30-min increments
+        $hours = [];
+        for ($h = 6; $h <= 18; $h++) {
+            $hours[] = sprintf('%02d:30', $h);
+            $hours[] = sprintf('%02d:00', $h + 1);
+        }
+        $hours[] = '19:00'; // last point
 
+        $days = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+
+        // Initialize array
+        $affluence = [];
+        foreach ($days as $dayName) {
+            $affluence[$dayName] = array_fill(0, count($hours), 0);
+        }
+
+        // Fetch sales for the week
+        $sales = $saleRepository->createQueryBuilder('s')
+            ->andWhere('s.createdAt BETWEEN :start AND :end')
+            ->setParameter('start', $startOfWeek)
+            ->setParameter('end', $endOfWeek)
+            ->getQuery()
+            ->getResult();
+
+        // Populate affluence array
+        foreach ($sales as $sale) {
+            $dayName = $days[(int)$sale->getCreatedAt()->format('N') - 1]; // 1 = Monday
+            $hourFloat = (float)$sale->getCreatedAt()->format('G') + ( (int)$sale->getCreatedAt()->format('i') >= 30 ? 0.5 : 0 );
+            
+            // Only count if between 6.5 and 19
+            if ($hourFloat >= 6.5 && $hourFloat <= 19) {
+                $index = array_search(
+                    sprintf('%02d:%02d', floor($hourFloat), ($hourFloat - floor($hourFloat)) > 0 ? 30 : 0),
+                    $hours
+                );
+                if ($index !== false) {
+                    $affluence[$dayName][$index]++;
+                }
+            }
+        }
+
+        return $this->render('dashboard/weekly_affluence.html.twig', [
+            'hours' => $hours,
+            'affluence' => $affluence,
+        ]);
+    }
 
 
     #[Route('sales-owing', name: 'admin_sales_owing')]

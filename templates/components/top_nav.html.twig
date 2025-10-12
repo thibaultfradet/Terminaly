@@ -44,6 +44,11 @@
                                 Par mois
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ path('admin_weekly_affluence') }}" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/statistiques/jour' %}bg-light{% endif %}">
+                                Horaire d'affluence
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>

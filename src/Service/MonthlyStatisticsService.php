@@ -47,15 +47,25 @@ class MonthlyStatisticsService
      */
     public function getClientCount(array $sales): int
     {
-        $clients = [];
+        return count($sales);
+    }
+
+    /**
+     * Get total number of products sold across a list of sales
+     */
+    public function getTotalProductSold(array $sales): int
+    {
+        $count = 0;
+
         foreach ($sales as $sale) {
-            $name = trim(strtolower($sale->getClientName() ?? ''));
-            if ($name !== '') {
-                $clients[$name] = true;
+            foreach ($sale->getSaleProducts() as $saleProduct) {
+                $count += $saleProduct->getQuantity();
             }
         }
-        return count($clients);
+
+        return $count;
     }
+
 
     /**
      * Get quantity sold and revenue per category

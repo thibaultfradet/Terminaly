@@ -36,7 +36,7 @@
       <div class="card shadow-sm">
         <div class="card-body text-center">
           <div class="text-uppercase text-muted font-weight-medium">Total des ventes</div>
-          <div class="display-6 fw-bold text-primary">{{ totalRevenue|number_format(2, ',', ' ') }} €</div>
+          <div class="display-6 fw-bold text-red">{{ totalRevenue|number_format(2, ',', ' ') }} €</div>
         </div>
       </div>
     </div>
@@ -45,9 +45,19 @@
       <div class="card shadow-sm">
         <div class="card-body text-center">
           <div class="text-uppercase text-muted font-weight-medium">Nombre de clients</div>
-          <div class="display-6 fw-bold text-success">{{ clientCount }}</div>
+          <div class="display-6 fw-bold text-primary">{{ clientCount }}</div>
         </div>
       </div>
+    </div>
+
+
+    <div class="col-sm-6 col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <div class="text-uppercase text-muted font-weight-medium">Nombre de produits vendues</div>
+            <div class="display-6 fw-bold text-success">{{ totalProductSold }}</div>
+          </div>
+        </div>
     </div>
   </div>
 

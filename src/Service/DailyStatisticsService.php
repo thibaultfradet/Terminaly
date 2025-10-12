@@ -36,7 +36,7 @@ class DailyStatisticsService
 
 
 
-   /**
+    /**
      * Get total number of products sold across a list of sales
      */
     public function getTotalProductSold(array $sales): int
