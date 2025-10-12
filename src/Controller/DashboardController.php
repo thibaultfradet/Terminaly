@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Repository\SaleRepository;
+use App\Service\DailyStatisticsService;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,6 +13,41 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class DashboardController extends AbstractController
 {
+
+
+    #[Route('/daily-statistiques', name: 'admin_daily_statistiques')]
+    public function dailyStatistiques(
+        Request $request,
+        DailyStatisticsService $statisticsService
+    ): Response {
+        // Get the selected date (default = today)
+        $dateString = $request->query->get('date', (new \DateTime())->format('Y-m-d'));
+        $selectedDate = new DateTimeImmutable($dateString);
+
+        // Get all sales for this date
+        $sales = $statisticsService->getSalesByDay($selectedDate);
+
+        // Compute statistics
+        $totalProductSold = $statisticsService->getTotalProductSold($sales);
+        $totalRevenue = $statisticsService->getTotalRevenue($sales);
+        $clientCount = $statisticsService->getClientCount($sales);
+        $revenueByPaymentType = $statisticsService->getRevenueByPaymentType($sales);
+        $detailedSales = $statisticsService->getDetailedSalesByCategory($sales);
+
+
+        return $this->render('dashboard/daily_statistiques.html.twig', [
+            'date' => $selectedDate->format('Y-m-d'),
+            'totalProductSold' => $totalProductSold,
+            'totalRevenue' => $totalRevenue,
+            'clientCount' => $clientCount,
+            'revenueByPaymentType' => $revenueByPaymentType,
+            'detailedSales' => $detailedSales,
+        ]);
+    }
+
+
+
+
    
     /**
      * Custom dashboard statistiques

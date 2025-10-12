@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+   <title>{% block title %}Welcome!{% endblock %}</title>
+
+    {% block stylesheets %}
+      <link href="{{ asset('assets/styles/tabler.min.css') }}" rel="stylesheet">        
+    {% endblock %}
+
+     {% block javascripts %}
+       <script src="{{ asset('/assets/js/tabler.min.js') }}"></script>
+    {% endblock %}
+  </head>
+  <body class="d-flex flex-column">
+    <div class="page page-center">
+      <div class="container container-normal py-4">
+         {% block body %}{% endblock %}
+      </div>
+    </div>
+    {% block javascripts_bottom %}{% endblock %}
+  </body>
+</html>
