@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <div class="page-header d-print-none">
+    <div class="container-xl">
+      <h1 class="page-title mb-3">Statistiques du {{ date|date('d/m/Y') }}</h1>
+    </div>
+  </div>
+
+  <div class="container-xl py-4">
+    <!-- Date selection card -->
+    <div class="card mb-4 w-100 shadow-sm">
+      <div class="card-body">
+        <form method="get" class="d-flex align-items-center justify-content-between">
+          <div>
+            <h3 class="card-title mb-0">Sélectionner une date</h3>
+            <p class="text-muted">Choisissez un jour pour afficher les statistiques correspondantes.</p>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <input type="date" name="date" value="{{ date|date('Y-m-d') }}" class="form-control">
+            <button type="submit" class="btn btn-primary">
+              <i class="ti ti-search me-1"></i> Rechercher
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Main stats cards -->
+    <div class="row row-cards mb-4">
+      <div class="col-sm-6 col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <div class="text-uppercase text-muted font-weight-medium">Total des ventes</div>
+            <div class="display-6 fw-bold text-red">{{ totalRevenue }} €</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <div class="text-uppercase text-muted font-weight-medium">Nombre de clients</div>
+            <div class="display-6 fw-bold text-primary">{{ clientCount }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <div class="text-uppercase text-muted font-weight-medium">Nombre de produits vendues</div>
+            <div class="display-6 fw-bold text-success">{{ totalProductSold }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment types -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header">
+        <h3 class="card-title mb-0">Montant par type de paiement</h3>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          {% for type, total in revenueByPaymentType %}
+            <div class="col-sm-6 col-lg-3 mb-3">
+              <div class="card card-sm bg-light">
+                <div class="card-body text-center">
+                  <div class="text-uppercase text-muted small">{{ type|capitalize }}</div>
+                  <div class="h3 mb-0">{{ total }} €</div>
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <div class="text-muted">Aucun paiement enregistré.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Sales details grouped by category -->
+    <h3 class="mb-3">Détails des ventes du jour</h3>
+
+    {% for category in detailedSales %}
+      <div class="card shadow-sm mb-4 border-0">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+          
+          <!-- Category name -->
+          <div>
+            <h3 class="card-title mb-0 fw-semibold">{{ category.categoryName }}</h3>
+          </div>
+
+          <!-- Totals block -->
+          <div class="d-flex gap-5">
+            <!-- Total quantity -->
+            <div class="text-center d-flex flex-column align-content-between justify-content-between">
+              <div class="text-muted small text-uppercase mb-1">Quantité totale</div>
+              <div class="fs-4 fw-bold text-success">{{ category.totalQuantity }}</div>
+            </div>
+
+            <!-- Total sales -->
+            <div class="text-center d-flex flex-column align-content-between justify-content-between">
+              <div class="text-muted small text-uppercase mb-1">Montant total</div>
+              <div class="fw-bold text-primary fs-4">
+                {{ category.totalSales|number_format(2, ',', ' ') }} €
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-vcenter card-table align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Produit</th>
+                <th class="text-center">Quantité vendue</th>
+                <th class="text-center">Montant total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for product in category.productList %}
+                <tr>
+                  <td class="fw-medium">{{ product.name }}</td>
+                  <td class="text-center">{{ product.quantity }}</td>
+                  <td class="text-center fw-semibold text-primary">
+                    {{ product.total|number_format(2, ',', ' ') }} €
+                  </td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="3" class="text-center text-muted py-3">
+                    Aucun produit vendu dans cette catégorie.
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% else %}
+      <div class="card shadow-sm">
+        <div class="card-body text-center text-muted">
+          Aucune vente enregistrée pour cette date.
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

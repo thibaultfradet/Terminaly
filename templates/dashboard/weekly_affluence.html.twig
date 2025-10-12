@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="page-header d-print-none">
+  <div class="container-xl">
+    <h1 class="page-title mb-3">Horaire d'affluence de la semaine</h1>
+    <p class="text-muted">Nombre de ventes par heure pour chaque jour de la semaine.</p>
+  </div>
+</div>
+
+<div class="container-xl py-4">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <canvas id="weeklyAffluenceChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('weeklyAffluenceChart');
+
+const data = {
+  labels: {{ hours|json_encode|raw }}, // 0 à 23
+  datasets: [
+    {% for day, values in affluence %}
+    {
+      label: '{{ day }}',
+      data: {{ values|json_encode|raw }},
+      fill: false,
+      borderColor: 'hsl({{ loop.index0 * 50 }}, 70%, 50%)',
+      tension: 0.1
+    },
+    {% endfor %}
+  ]
+};
+
+new Chart(ctx, {
+  type: 'line',
+  data: data,
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: true },
+      tooltip: { mode: 'index', intersect: false }
+    },
+    scales: {
+      x: { title: { display: true, text: 'Heure de la journée' } },
+      y: { title: { display: true, text: 'Nombre de ventes' }, beginAtZero: true }
+    }
+  }
+});
+</script>
+{% endblock %}
