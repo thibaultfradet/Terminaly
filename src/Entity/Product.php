@@ -28,8 +28,6 @@ class Product
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'salesProducts')]
-    private ?Sale $sale = null;
 
     /**
      * @var Collection<int, SaleProduct>
@@ -99,18 +97,6 @@ class Product
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getSale(): ?Sale
-    {
-        return $this->sale;
-    }
-
-    public function setSale(?Sale $sale): static
-    {
-        $this->sale = $sale;
 
         return $this;
     }
