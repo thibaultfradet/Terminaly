@@ -40,6 +40,9 @@ class Product
 
     private ?string $imagePath = null;
 
+    #[ORM\Column]
+    private ?int $orderNumber = null;
+
 
     public function __construct()
     {
@@ -148,5 +151,17 @@ class Product
         $fullPath = __DIR__ . '/../../public' . $path;
 
         return file_exists($fullPath) ? $path : null;
+    }
+
+    public function getOrderNumber(): ?int
+    {
+        return $this->orderNumber;
+    }
+
+    public function setOrderNumber(int $orderNumber): static
+    {
+        $this->orderNumber = $orderNumber;
+
+        return $this;
     }
 }
