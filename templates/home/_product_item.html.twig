@@ -10,18 +10,18 @@
         <img src="{{ product.imagePath}}" 
              alt="{{ product.name }}" 
              class="card-img-top rounded-top p-4"
-             style="height:170px; object-fit:cover;">
+             style="height:140px; object-fit:cover;">
 
         <div class="card-body p-2 d-flex flex-column">
             {# Product name #}
-            <h4 class="fw-bold mb-2 text-truncate" style="-webkit-line-clamp:2; display:-webkit-box; -webkit-box-orient:vertical; overflow:hidden;">
+            <h4 class="fw-bold mb-2 text-truncate h3" style="-webkit-line-clamp:2; display:-webkit-box; -webkit-box-orient:vertical; overflow:hidden;">
                 {{ product.name }}
             </h4>
 
             {# Category and price line #}
             <div class="d-flex justify-content-between align-items-center mt-auto">
-                <span class="text-muted small">{{ product.category.name ?? '' }}</span>
-                <span class="fw-bold">{{ product.price|number_format(2, ',', ' ') }} €</span>
+                <span class="text-muted h3">{{ product.category.name ?? '' }}</span>
+                <span class="fw-bold h3">{{ product.price|number_format(2, ',', ' ') }} €</span>
             </div>
         </div>
     </div>

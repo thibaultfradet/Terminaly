@@ -17,7 +17,7 @@ use App\Form\ProductType;
 #[Route('/product')]
 final class ProductController extends AbstractController
 {
-    #[Route('/admin/product/{id}/stats', name: 'admin_product_stats')]
+    #[Route('/{id}/stats', name: 'admin_product_stats')]
     public function productStats(Product $product, Request $request, SaleProductRepository $saleProductRepository): Response
     {
         // Détermine le mois sélectionné ou par défaut le mois courant
@@ -75,7 +75,7 @@ final class ProductController extends AbstractController
             10 => 'Octobre', 11 => 'Novembre', 12 => 'Décembre',
         ];
 
-        return $this->render('admin/product_stats.html.twig', [
+        return $this->render('product/product_stats.html.twig', [
             'product' => $product,
             'dailySales' => $dailySales,
             'dailyRevenue' => $dailyRevenue,
