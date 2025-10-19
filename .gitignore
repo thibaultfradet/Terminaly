@@ -9,3 +9,4 @@
 /vendor/
 /public/uploads
 ###< symfony/framework-bundle ###
+.vscode/
