@@ -268,7 +268,9 @@ final class DashboardController extends AbstractController
         $productData = [];
         foreach ($sales as $sale) {
             foreach ($sale->getSaleProducts() as $sp) {
-                $key = $sp->getProduct()->getName() . '||' . $sp->getPrice(); // unique key = product name + price
+                // Use product ID + price as key to avoid merging different prices
+                $key = $sp->getProduct()->getId() . '||' . $sp->getPrice();
+
                 if (!isset($productData[$key])) {
                     $productData[$key] = [
                         'name' => $sp->getProduct()->getName(),
@@ -277,6 +279,7 @@ final class DashboardController extends AbstractController
                         'total' => 0,
                     ];
                 }
+
                 $productData[$key]['quantity'] += $sp->getQuantity();
                 $productData[$key]['total'] += $sp->getQuantity() * $sp->getPrice();
             }
