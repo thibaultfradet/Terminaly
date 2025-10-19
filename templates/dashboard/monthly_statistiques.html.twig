@@ -2,10 +2,20 @@
 
 {% block body %}
 <div class="page-header d-print-none">
-  <div class="container-xl">
+  <div class="container-xl d-flex justify-content-between align-items-center">
     <h1 class="page-title mb-3">Statistiques du mois {{ month }}/{{ year }}</h1>
+    <a 
+    href="{{ path('app_monthly_export', { month: month }) }}" 
+    class="btn d-flex text-white "
+    style="background-color: #217346;"
+    data-controller="button-icon"
+    >
+        {{ ux_icon('uiw:file-excel', { style: 'width:24px; height:24px;' }) }}
+        <span class="mx-2">Exporter Excel</span>
+    </a>
   </div>
 </div>
+
 
 <div class="container-xl py-4">
   <!-- Month selection card -->
