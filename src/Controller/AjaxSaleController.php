@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Entity\Sale;
 use App\Entity\SaleProduct;
+use App\Service\PdfService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 final class AjaxSaleController extends AbstractController
@@ -38,11 +40,11 @@ final class AjaxSaleController extends AbstractController
             // If clientName is provided, store it
             $clientName = $data['clientName'] ?? null;
             if ($clientName) {
-                $sale->setClientName($clientName); 
+                $sale->setClientName($clientName);
             }
 
             // Set owingCompleted to false
-            $sale->setOwingCompleted(false); 
+            $sale->setOwingCompleted(false);
         }
 
         $em->persist($sale);
@@ -74,5 +76,23 @@ final class AjaxSaleController extends AbstractController
             'message' => 'Sale processed successfully',
             'saleId' => $sale->getId()
         ]);
+    }
+
+
+
+
+    #[Route('/facture/{sale}', name: 'app_facture')]
+    public function facture(Sale $sale, PdfService $pdfService): Response
+    {
+        // Render the invoice HTML using Twig
+        $html = $this->renderView('facture/index.html.twig', [
+            'sale' => $sale,
+        ]);
+
+        // Use PdfService to generate and stream the PDF
+        $pdfService->generatePdf($html, 'facture_' . $sale->getId() . '.pdf');
+
+        // The PDF is streamed directly, so we can return an empty Response
+        return new Response();
     }
 }
