@@ -8,7 +8,6 @@
     </div>
     <div class="fs-5 fw-semibold" id="current-time"></div>
 </div>
-
 <!-- Sidebar -->
 <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
     <div class="offcanvas-header border-bottom">
@@ -17,15 +16,18 @@
     </div>
     <div class="offcanvas-body d-flex flex-column justify-content-between p-0">
         <ul class="list-unstyled m-0 p-3">
+            <!-- Encaisser -->
             <li class="mb-2">
                 <a href="/" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/' %}bg-light{% endif %}">
                     {{ ux_icon('streamline-freehand:cash-payment-bill', { style: 'width:24px; height:24px;' }) }}
                     Encaisser
                 </a>
             </li>
+
+            <!-- Statistiques -->
             <li class="mb-2">
                 <a class="d-flex align-items-center justify-content-between text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() starts with '/statistiques' %}bg-light{% endif %}"
-                data-bs-toggle="collapse" href="#statistiquesSubmenu" role="button" aria-expanded="false" aria-controls="statistiquesSubmenu">
+                   data-bs-toggle="collapse" href="#statistiquesSubmenu" role="button" aria-expanded="false" aria-controls="statistiquesSubmenu">
                     <div class="d-flex align-items-center gap-2">
                         {{ ux_icon('mdi:chart-line', { style: 'width:24px; height:24px;' }) }}
                         Statistiques
@@ -40,37 +42,66 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ path('admin_monthly_statistiques') }}" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/statistiques/jour' %}bg-light{% endif %}">
+                            <a href="{{ path('admin_monthly_statistiques') }}" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/statistiques/mois' %}bg-light{% endif %}">
                                 Par mois
                             </a>
                         </li>
                         <li>
-                            <a href="{{ path('admin_weekly_affluence') }}" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/statistiques/jour' %}bg-light{% endif %}">
+                            <a href="{{ path('admin_weekly_affluence') }}" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/statistiques/horaire' %}bg-light{% endif %}">
                                 Horaire d'affluence
                             </a>
                         </li>
                     </ul>
                 </div>
             </li>
+
+            <!-- Dû non payé -->
             <li class="mb-2">
-                <a href="/sales-owing" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/' %}bg-light{% endif %}">
+                <a href="/sales-owing" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/sales-owing' %}bg-light{% endif %}">
                     {{ ux_icon('fluent-mdl2:blowing-snow', { style: 'width:24px; height:24px;' }) }}
                     Dû non payé
                 </a>
             </li>
+
+            <!-- Gérer -->
             <li class="mb-2">
-                <a href="/product" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/product' %}bg-light{% endif %}">
-                    {{ ux_icon('icon-park:ad-product', { style: 'width:24px; height:24px;' }) }}
-                    Produits
+                <!-- Dropdown trigger -->
+                <a class="d-flex align-items-center justify-content-between text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() starts with '/product' or app.request.getPathInfo() starts with '/category' %}bg-light{% endif %}"
+                   data-bs-toggle="collapse" href="#gererSubmenu" role="button" aria-expanded="false" aria-controls="gererSubmenu">
+                    <div class="d-flex align-items-center gap-2">
+                        {{ ux_icon('material-symbols:settings', { style: 'width:24px; height:24px;' }) }}
+                        Gérer
+                    </div>
+                    {{ ux_icon('tabler:chevron-down', { style: 'width:20px; height:20px;' }) }}
                 </a>
-            </li>
-            <li class="mb-2">
-                <a href="/category" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/category' %}bg-light{% endif %}">
-                    {{ ux_icon('material-symbols:tag', { style: 'width:24px; height:24px;' }) }}
-                    Catégories
-                </a>
+
+                <!-- Dropdown content -->
+                <div class="collapse {% if app.request.getPathInfo() starts with '/product' or app.request.getPathInfo() starts with '/category' %}show{% endif %}" id="gererSubmenu">
+                    <ul class="list-unstyled ps-4 mt-1 mb-0">
+                        <li class="mb-1">
+                            <a href="/product/order" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/product' %}bg-light{% endif %}">
+                                {{ ux_icon('fluent:re-order-16-regular', { style: 'width:24px; height:24px;' }) }}
+                                Ordre des produits
+                            </a>
+                        </li>
+                        <li class="mb-1">
+                            <a href="/product" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/product' %}bg-light{% endif %}">
+                                {{ ux_icon('icon-park:ad-product', { style: 'width:24px; height:24px;' }) }}
+                                Produits
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/category" class="d-flex align-items-center gap-2 text-decoration-none text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() == '/category' %}bg-light{% endif %}">
+                                {{ ux_icon('material-symbols:tag', { style: 'width:24px; height:24px;' }) }}
+                                Catégories
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
         </ul>
+
+        <!-- Logout -->
         <div class="p-3 border-top">
             <a href="/logout" class="btn btn-danger w-100 d-flex align-items-center justify-content-center gap-2">
                 {{ ux_icon('material-symbols:logout', { style: 'width:24px; height:24px;' }) }}
