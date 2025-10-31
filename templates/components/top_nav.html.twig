@@ -8,6 +8,7 @@
     </div>
     <div class="fs-5 fw-semibold" id="current-time"></div>
 </div>
+
 <!-- Sidebar -->
 <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
     <div class="offcanvas-header border-bottom">
@@ -24,6 +25,7 @@
                 </a>
             </li>
 
+            {% if is_granted('ROLE_ADMIN') %}
             <!-- Statistiques -->
             <li class="mb-2">
                 <a class="d-flex align-items-center justify-content-between text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() starts with '/statistiques' %}bg-light{% endif %}"
@@ -65,7 +67,6 @@
 
             <!-- Gérer -->
             <li class="mb-2">
-                <!-- Dropdown trigger -->
                 <a class="d-flex align-items-center justify-content-between text-dark p-2 rounded hover-bg-light {% if app.request.getPathInfo() starts with '/product' or app.request.getPathInfo() starts with '/category' %}bg-light{% endif %}"
                    data-bs-toggle="collapse" href="#gererSubmenu" role="button" aria-expanded="false" aria-controls="gererSubmenu">
                     <div class="d-flex align-items-center gap-2">
@@ -75,7 +76,6 @@
                     {{ ux_icon('tabler:chevron-down', { style: 'width:20px; height:20px;' }) }}
                 </a>
 
-                <!-- Dropdown content -->
                 <div class="collapse {% if app.request.getPathInfo() starts with '/product' or app.request.getPathInfo() starts with '/category' %}show{% endif %}" id="gererSubmenu">
                     <ul class="list-unstyled ps-4 mt-1 mb-0">
                         <li class="mb-1">
@@ -99,6 +99,7 @@
                     </ul>
                 </div>
             </li>
+            {% endif %}
         </ul>
 
         <!-- Logout -->
@@ -112,7 +113,6 @@
 </div>
 
 <script>
-// top_nav.js
 function updateDateTime() {
     const now = new Date();
     const date = now.toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
