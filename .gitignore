@@ -10,3 +10,5 @@
 /public/uploads
 ###< symfony/framework-bundle ###
 .vscode/
+
+.env
