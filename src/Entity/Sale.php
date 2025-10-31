@@ -40,6 +40,9 @@ class Sale
     #[ORM\Column(nullable: true)]
     private ?bool $owingCompleted = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $client_address = null;
+
     public function __construct()
     {
         $this->salesProducts = new ArrayCollection();
@@ -168,6 +171,18 @@ class Sale
     public function setowingCompleted(?bool $owingCompleted): static
     {
         $this->owingCompleted = $owingCompleted;
+
+        return $this;
+    }
+
+    public function getClientAddress(): ?string
+    {
+        return $this->client_address;
+    }
+
+    public function setClientAddress(?string $client_address): static
+    {
+        $this->client_address = $client_address;
 
         return $this;
     }
