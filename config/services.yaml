@@ -4,7 +4,21 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-
+    seller.name: '%env(SELLER_NAME)%'
+    seller.legal_form: '%env(SELLER_LEGAL_FORM)%'
+    seller.activity: '%env(SELLER_ACTIVITY)%'
+    seller.naf_ape: '%env(SELLER_NAF_APE)%'
+    seller.siren: '%env(SELLER_SIREN)%'
+    seller.siret: '%env(SELLER_SIRET)%'
+    seller.vat_number: '%env(SELLER_VAT_NUMBER)%'
+    seller.creation_date: '%env(SELLER_CREATION_DATE)%'
+    seller.address: '%env(SELLER_ADDRESS)%'
+    seller.city: '%env(SELLER_CITY)%'
+    seller.postal_code: '%env(SELLER_POSTAL_CODE)%'
+    seller.country: '%env(SELLER_COUNTRY)%'
+    seller.rcs: '%env(SELLER_RCS)%'
+    seller.late_payment_rate: '%env(SELLER_LATE_PAYMENT_RATE)%'
+    seller.tva_exemption: '%env(SELLER_TVA_EXEMPTION)%'
 services:
     # default configuration for services in *this* file
     _defaults:

@@ -8,6 +8,7 @@ use App\Entity\SaleProduct;
 use App\Service\PdfService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,6 +18,40 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class AjaxSaleController extends AbstractController
 {
+    public function __construct(
+        #[Autowire(env: 'SELLER_NAME')]
+        private string $sellerName,
+        #[Autowire(env: 'SELLER_LEGAL_FORM')]
+        private string $sellerLegalForm,
+        #[Autowire(env: 'SELLER_ACTIVITY')]
+        private string $sellerActivity,
+        #[Autowire(env: 'SELLER_NAF_APE')]
+        private string $sellerNafApe,
+        #[Autowire(env: 'SELLER_SIREN')]
+        private string $sellerSiren,
+        #[Autowire(env: 'SELLER_SIRET')]
+        private string $sellerSiret,
+        #[Autowire(env: 'SELLER_VAT_NUMBER')]
+        private string $sellerVatNumber,
+        #[Autowire(env: 'SELLER_CREATION_DATE')]
+        private string $sellerCreationDate,
+        #[Autowire(env: 'SELLER_ADDRESS')]
+        private string $sellerAddress,
+        #[Autowire(env: 'SELLER_CITY')]
+        private string $sellerCity,
+        #[Autowire(env: 'SELLER_POSTAL_CODE')]
+        private string $sellerPostalCode,
+        #[Autowire(env: 'SELLER_COUNTRY')]
+        private string $sellerCountry,
+        #[Autowire(env: 'SELLER_RCS')]
+        private string $sellerRcs,
+        #[Autowire(env: 'SELLER_LATE_PAYMENT_RATE')]
+        private string $sellerLatePaymentRate,
+        #[Autowire(env: 'SELLER_TVA_EXEMPTION')]
+        private string $sellerTvaExemption,
+    ) {
+    }
+
     #[Route('/ajax/sale', name: 'app_ajax_sale', methods: ['POST'])]
     public function index(
         Request $request,
@@ -36,29 +71,24 @@ final class AjaxSaleController extends AbstractController
         $cart = $data['cart'];
         $paymentType = $data['paymentType'];
 
-        // Create a new Sale
+        // Create new sale
         $sale = new Sale();
         $sale->setCreatedAt(new \DateTimeImmutable());
         $sale->setPaymentType($paymentType);
 
-        // Handle owing payments
+        // Handle owing sales
         if ($paymentType === 'owing') {
-            $clientName = $data['clientName'] ?? null;
-            if ($clientName) {
-                $sale->setClientName($clientName);
-            }
+            $sale->setClientName($data['clientName'] ?? null);
             $sale->setOwingCompleted(false);
         }
 
         $em->persist($sale);
 
-        // Create SaleProduct entities for each product in the cart
+        // Add each product to sale
         foreach ($cart as $productId => $item) {
-            /** @var Product $product */
             $product = $em->getRepository(Product::class)->find($productId);
-            if (!$product) {
-                continue; // skip invalid products
-            }
+            if (!$product)
+                continue;
 
             $quantity = $item['quantity'] ?? 1;
             $price = $item['price'] ?? $product->getPrice();
@@ -74,49 +104,55 @@ final class AjaxSaleController extends AbstractController
 
         $em->flush();
 
-        // === Handle invoice generation and email sending if requested ===
-        if (!empty($data['client_want_invoice']) && $data['client_want_invoice'] === true) {
+        // === Generate and send invoice if requested ===
+        if (!empty($data['client_want_invoice'])) {
             $clientName = $data['client_name'] ?? 'Client';
             $clientEmail = $data['client_mail'] ?? null;
-            $clientAddress = $data['client_address'] ?? '';
+            $clientMail = $data['client_mail'] ?? '';
 
-            // Render invoice HTML using Twig
-            $html = $this->renderView('facture/index.html.twig', [
+            $translatedPaymentType = '';
+            $type = strtolower($sale->getPaymentType());
+            switch ($type) {
+                case 'card':
+                    $translatedPaymentType = 'Carte bancaire';
+                    break;
+                case 'cash':
+                    $translatedPaymentType = 'Espèce';
+                    break;
+                case 'check':
+                    $translatedPaymentType = 'Chèque';
+                    break;
+                case 'owing':
+                    $translatedPaymentType = 'Dû';
+                    break;
+            }
+
+
+            // Render invoice HTML with seller info
+            $html = $this->renderView('reçu/index.html.twig', [
                 'sale' => $sale,
-                'clientName' => $clientName,
-                'clientAddress' => $clientAddress,
-                // Seller info (you could refactor to a service later)
-                'sellerName' => getenv('SELLER_NAME'),
-                'sellerLegalForm' => getenv('SELLER_LEGAL_FORM'),
-                'sellerActivity' => getenv('SELLER_ACTIVITY'),
-                'sellerNafApe' => getenv('SELLER_NAF_APE'),
-                'sellerSiren' => getenv('SELLER_SIREN'),
-                'sellerSiret' => getenv('SELLER_SIRET'),
-                'sellerVatNumber' => getenv('SELLER_VAT_NUMBER'),
-                'sellerCreationDate' => getenv('SELLER_CREATION_DATE'),
-                'sellerAddress' => getenv('SELLER_ADDRESS'),
-                'sellerCity' => getenv('SELLER_CITY'),
-                'sellerPostalCode' => getenv('SELLER_POSTAL_CODE'),
-                'sellerCountry' => getenv('SELLER_COUNTRY'),
-                'sellerRcs' => getenv('SELLER_RCS'),
-                'sellerLatePaymentRate' => getenv('SELLER_LATE_PAYMENT_RATE'),
-                'sellerTvaExemption' => getenv('SELLER_TVA_EXEMPTION'),
+                'translatedPaymentType' => $translatedPaymentType,
+                'sellerName' => $this->sellerName,
+                'sellerSiret' => $this->sellerSiret,
+                'sellerVatNumber' => $this->sellerVatNumber,
+                'sellerAddress' => $this->sellerAddress,
+                'sellerCity' => $this->sellerCity,
+                'sellerPostalCode' => $this->sellerPostalCode,
             ]);
 
-            // Generate PDF and store it in /public/facture/
-            $fileName = 'facture_' . $sale->getId() . '.pdf';
-            $outputPath = $this->getParameter('kernel.project_dir') . '/public/facture/' . $fileName;
+            $fileName = 'reçu_' . $sale->getId() . '.pdf';
+            $outputPath = $this->getParameter('kernel.project_dir') . '/public/reçu/' . $fileName;
 
-            // Use PdfService to save the file instead of streaming it
+            // Generate PDF file
             $pdfService->generatePdf($html, $outputPath);
 
-            // Send invoice via email if client email is provided
+            // Send invoice by email if client email is provided
             if ($clientEmail) {
                 $email = (new Email())
-                    ->from(getenv('MAIL_FROM') ?: 'no-reply@yourcompany.com')
+                    ->from('no-reply@yourcompany.com')
                     ->to($clientEmail)
-                    ->subject('Votre facture #' . $sale->getId())
-                    ->text('Bonjour ' . $clientName . ",\n\nVeuillez trouver ci-joint votre facture.\nMerci pour votre achat.")
+                    ->subject('Votre reçu #' . $sale->getId())
+                    ->text("Bonjour $clientName,\n\nVeuillez trouver ci-joint votre reçu.")
                     ->attachFromPath($outputPath, $fileName, 'application/pdf');
 
                 $mailer->send($email);
@@ -130,17 +166,41 @@ final class AjaxSaleController extends AbstractController
         ]);
     }
 
+    #[Route('/recu/{sale}', name: 'app_reçu')]
+    public function reçu(Sale $sale, PdfService $pdfService): Response
+    {
+        $translatedPaymentType = '';
+        $type = strtolower($sale->getPaymentType());
+        switch ($type) {
+            case 'card':
+                $translatedPaymentType = 'Carte bancaire';
+                break;
+            case 'cash':
+                $translatedPaymentType = 'Espèce';
+                break;
+            case 'check':
+                $translatedPaymentType = 'Chèque';
+                break;
+            case 'owing':
+                $translatedPaymentType = 'Dû';
+                break;
+        }
 
-    // #[Route('/facture/{sale}', name: 'app_facture')]
-    // public function facture(Sale $sale, PdfService $pdfService): Response
-    // {
-    //     // Render and stream invoice as before
-    //     $html = $this->renderView('facture/index.html.twig', [
-    //         'sale' => $sale,
-    //     ]);
+        // Render invoice view with seller info
+        $html = $this->renderView('recu/index.html.twig', [
+            'sale' => $sale,
+            'translatedPaymentType' => $translatedPaymentType,
+            'sellerName' => $this->sellerName,
+            'sellerSiret' => $this->sellerSiret,
+            'sellerVatNumber' => $this->sellerVatNumber,
+            'sellerAddress' => $this->sellerAddress,
+            'sellerCity' => $this->sellerCity,
+            'sellerPostalCode' => $this->sellerPostalCode,
+        ]);
 
-    //     $pdfService->generatePdf($html, 'facture_' . $sale->getId() . '.pdf');
+        // Stream PDF directly to browser
+        $pdfService->generatePdf($html, 'reçu_' . $sale->getId() . '.pdf');
 
-    //     return new Response();
-    // }
+        return new Response();
+    }
 }

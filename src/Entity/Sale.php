@@ -41,7 +41,7 @@ class Sale
     private ?bool $owingCompleted = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $client_address = null;
+    private ?string $client_mail = null;
 
     public function __construct()
     {
@@ -175,14 +175,14 @@ class Sale
         return $this;
     }
 
-    public function getClientAddress(): ?string
+    public function getclientMail(): ?string
     {
-        return $this->client_address;
+        return $this->client_mail;
     }
 
-    public function setClientAddress(?string $client_address): static
+    public function setclientMail(?string $client_mail): static
     {
-        $this->client_address = $client_address;
+        $this->client_mail = $client_mail;
 
         return $this;
     }

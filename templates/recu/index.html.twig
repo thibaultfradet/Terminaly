@@ -85,7 +85,7 @@
 </style>
 
 <div class="invoice-header">
-    <h1>Facture n° {{ sale.id }}</h1>
+    <h1>Reçu n° {{ sale.id }}</h1>
     <p><strong>Date d’émission :</strong> {{ sale.createdAt|date('d/m/Y') }}</p>
 </div>
 
@@ -94,14 +94,12 @@
         <td>
             <strong>{{ sellerName }}</strong><br>
             {{ sellerAddress }}<br>
+            {{ sellerPostalCode }} {{ sellerCity }}<br>
             {% if sellerSiret %}SIRET : {{ sellerSiret }}<br>{% endif %}
             {% if sellerVatNumber %}TVA intracom : {{ sellerVatNumber }}<br>{% endif %}
-            {% if sellerLegalForm %}Forme juridique : {{ sellerLegalForm }}<br>{% endif %}
-            {% if sellerActivity %}Activité : {{ sellerActivity }} ({{ sellerNafApe }}){% endif %}
         </td>
         <td style="text-align:right;">
             <strong>{{ sale.clientName }}</strong><br>
-            {{ sale.clientAddress }}
         </td>
     </tr>
 </table>
@@ -112,16 +110,25 @@
         <th style="width: 15%;">Quantité</th>
         <th style="width: 15%;">PU HT</th>
         <th style="width: 10%;">TVA</th>
-        <th style="width: 20%;">Total HT</th>
+        <th style="width: 20%;">Total TTC</th>
     </tr>
     {% if sale.saleProducts is not empty %}
         {% for saleProduct in sale.saleProducts %}
+            {% set total_ttc = saleProduct.quantity * saleProduct.price %}
+
+            {# Total HT for the product #}
+            {% set total_ht = total_ttc / (1 + saleProduct.product.tvaNumber / 100) %}
+
+            {# Unit price HT #}
+            {% set pu_ht = total_ht / saleProduct.quantity %}
+
             <tr>
                 <td>{{ saleProduct.product.name }}</td>
                 <td class="text-right">{{ saleProduct.quantity|number_format(2, ',', ' ') }}</td>
-                <td class="text-right">{{ saleProduct.price|number_format(2, ',', ' ') }} €</td>
-                <td class="text-right"></td>
+                <td class="text-right">{{ pu_ht|number_format(2, ',', ' ') }} €</td>
+                <td class="text-right">{{ saleProduct.product.tvaNumber }} %</td>
                 <td class="text-right">{{ (saleProduct.quantity * saleProduct.price)|number_format(2, ',', ' ') }} €</td>
+
             </tr>
         {% endfor %}
     {% else %}
@@ -132,30 +139,42 @@
 </table>
 
 <table class="totals">
+    {# calculate ht && ttc accu #}
+    {% set total_ht_global = 0 %}
+    {% set total_ttc_global = 0 %}
+
+    {% for saleProduct in sale.saleProducts %}
+        {# Total TTC for this product #}
+        {% set total_ttc = saleProduct.quantity * saleProduct.price %}
+
+        {# Total HT for this product #}
+        {% set total_ht = total_ttc / (1 + saleProduct.product.tvaNumber / 100) %}
+
+        {# Accumulate total HT #}
+        {% set total_ht_global = total_ht_global + total_ht %}
+    {% endfor %}
+
+    {% for saleProduct in sale.saleProducts %}
+        {# Total TTC for this product #}
+        {% set total_ttc_global = total_ttc_global + saleProduct.quantity * saleProduct.price %}
+    {% endfor %}
+
     <tr>
-        <td style="width:70%; text-align:right;"><strong>Total HT</strong></td>
-        <td class="text-right" style="width:30%;"></td>
+        <td style="text-align:right;"><strong>Total HT</strong></td>
+        <td class="text-right"><strong>{{ total_ht_global|number_format(2, ',', ' ') }} €</strong</td>
     </tr>
     <tr>
-        <td style="text-align:right;"><strong>TVA</strong></td>
-        <td class="text-right"></td>
+        <th style="text-align:right;">Total TVA</th>
+        <th class="text-right">{{(total_ttc_global - total_ht_global)|number_format(2, ',', ' ') }} €</th>
     </tr>
     <tr>
         <th style="text-align:right;">Total TTC</th>
-        <th class="text-right"></th>
+        <th class="text-right">{{total_ttc_global|number_format(2, ',', ' ') }} €</th>
     </tr>
 </table>
 
 <p style="margin-top:10px;">
-    <strong>Date d’échéance :</strong> 
+    Règlement par : <strong>{{translatedPaymentType}}</strong> 
 </p>
 
-<div class="legal">
-    {% if sellerTvaExemption == 'true' %}
-        <p>TVA non applicable, article 293 B du CGI.</p>
-    {% else %}
-        <p>TVA due au taux indiqué ci-dessus.</p>
-    {% endif %}
-    <p>Pénalités de retard : {{ sellerLatePaymentRate|default('10') }} %/an et indemnité forfaitaire de 40 € (art. L441-10 C. com.).</p>
-</div>
 {% endblock %}

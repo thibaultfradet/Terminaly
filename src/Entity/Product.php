@@ -41,6 +41,9 @@ class Product
     #[ORM\Column]
     private ?int $orderNumber = null;
 
+    #[ORM\Column]
+    private ?float $tva_number = null;
+
 
     public function __construct()
     {
@@ -147,6 +150,18 @@ class Product
     public function setOrderNumber(int $orderNumber): static
     {
         $this->orderNumber = $orderNumber;
+
+        return $this;
+    }
+
+    public function getTvaNumber(): ?float
+    {
+        return $this->tva_number;
+    }
+
+    public function setTvaNumber(float $tva_number): static
+    {
+        $this->tva_number = $tva_number;
 
         return $this;
     }
