@@ -1,51 +1,164 @@
-# Symfony Docker
+<a id="readme-top"></a>
 
-A [Docker](https://www.docker.com/)-based installer and runtime for the [Symfony](https://symfony.com) web framework,
-with [FrankenPHP](https://frankenphp.dev) and [Caddy](https://caddyserver.com/) inside!
+<div align="center">
 
-![CI](https://github.com/dunglas/symfony-docker/workflows/CI/badge.svg)
+<h1 align="center">Terminaly</h1>
+
+<div>
+  <img src="images_readme/screen1.png" width="430" />
+  <img src="images_readme/screen2.png" width="430" />
+</div>
+
+<p align="center">
+  A French-based Symfony-powered kiosk application designed for fast-food vendors, combining intuitive ordering, role-based management, and advanced sales analytics.
+  <br />
+  <a href="#"><strong>Explore the docs »</strong></a>
+  <br />
+</p>
+</div>
+
+<!-- ABOUT THE PROJECT -->
+
+## About The Project
+
+Terminaly is a modern ordering system built with Symfony 7.3, designed for fast-food environments where speed, clarity, and efficient workflow matter.
+
+The application provides a clean and intuitive interface where vendors can:
+- Browse categories and see related products instantly
+- Add items to a real-time cart overview
+- Process payments via cash, check, card, or mark an order as unpaid due
+- Enter cash received and display remaining change automatically
+
+On the administration side, the platform includes:
+- A full role-based administration system (admins, vendors, etc.)
+- Product and category management with drag-and-drop sorting powered by SortableJS
+- Weekly affluence tracking based on order timestamps
+- Detailed statistics per day and month (payment types, revenue, quantities sold, graphs, and more)
+- Excel export for monthly statistics (using PhpSpreadsheet)
+- A debt management interface to validate unpaid orders
+- Authentication with email-based password reset (in progress)
+
+The goal is to provide a complete, reliable, and efficient kiosk system for fast-food restaurants.
+
+## Built With
+- Symfony 7.3
+- Twig
+- Doctrine ORM
+- SortableJS
+- Chart.js
+- PhpSpreadsheet
+- Bootstrap / SCSS
+
+<!-- GETTING STARTED -->
 
 ## Getting Started
 
-1. If not already done, [install Docker Compose](https://docs.docker.com/compose/install/) (v2.10+)
-2. Run `docker compose build --pull --no-cache` to build fresh images
-3. Run `docker compose up --wait` to set up and start a fresh Symfony project
-4. Open `https://localhost` in your favorite web browser and [accept the auto-generated TLS certificate](https://stackoverflow.com/a/15076602/1352334)
-5. Run `docker compose down --remove-orphans` to stop the Docker containers.
+Follow these steps to run Terminaly locally:
 
-## Features
+### Prerequisites
+- PHP ≥ 8.2
+- Composer
+- Symfony CLI (recommended)
+- MySQL or MariaDB
 
-- Production, development and CI ready
-- Just 1 service by default
-- Blazing-fast performance thanks to [the worker mode of FrankenPHP](https://github.com/dunglas/frankenphp/blob/main/docs/worker.md) (automatically enabled in prod mode)
-- [Installation of extra Docker Compose services](docs/extra-services.md) with Symfony Flex
-- Automatic HTTPS (in dev and prod)
-- HTTP/3 and [Early Hints](https://symfony.com/blog/new-in-symfony-6-3-early-hints) support
-- Real-time messaging thanks to a built-in [Mercure hub](https://symfony.com/doc/current/mercure.html)
-- [Vulcain](https://vulcain.rocks) support
-- Native [XDebug](docs/xdebug.md) integration
-- Super-readable configuration
+symfony check:requirements
 
-**Enjoy!**
+### Installation
 
-## Docs
+1. Clone the repository:
+git clone https://github.com/github_username/terminaly.git
 
-1. [Options available](docs/options.md)
-2. [Using Symfony Docker with an existing project](docs/existing-project.md)
-3. [Support for extra services](docs/extra-services.md)
-4. [Deploying in production](docs/production.md)
-5. [Debugging with Xdebug](docs/xdebug.md)
-6. [TLS Certificates](docs/tls.md)
-7. [Using MySQL instead of PostgreSQL](docs/mysql.md)
-8. [Using Alpine Linux instead of Debian](docs/alpine.md)
-9. [Using a Makefile](docs/makefile.md)
-10. [Updating the template](docs/updating.md)
-11. [Troubleshooting](docs/troubleshooting.md)
+2. Install dependencies:
+composer install
 
-## License
+3. Configure your .env database URL.
 
-Symfony Docker is available under the MIT License.
+4. Run migrations:
+php bin/console doctrine:migrations:migrate
 
-## Credits
+5. Start the Symfony server:
+symfony serve
 
-Created by [Kévin Dunglas](https://dunglas.dev), co-maintained by [Maxime Helias](https://twitter.com/maxhelias) and sponsored by [Les-Tilleuls.coop](https://les-tilleuls.coop).
+<!-- USAGE -->
+
+## Usage
+
+### Vendor Interface
+
+The kiosk interface allows staff to:
+- Select categories and instantly view related products
+- Add items to the cart
+- View the full cart overview
+- Process payments:
+  - Cash (with input for received amount and automatic remaining change)
+  - Card
+  - Check
+  - Unpaid due (with customer name input)
+- Print or validate the order
+
+### Admin Interface
+
+Admins have access to:
+- Product and category management
+- Drag-and-drop product ordering
+- Sales statistics by day and month
+- Weekly affluence tracking
+- Excel export for monthly reports
+- Due payments validation
+- User and role management
+- Authentication settings
+
+<!-- ROADMAP -->
+
+## Roadmap
+
+- [x] Category and product browsing  
+- [x] Real-time cart system  
+- [x] Payments: cash, check, card  
+- [x] Unpaid due management  
+- [x] Role-based admin dashboard  
+- [x] Product sorting with SortableJS  
+- [x] Daily statistics  
+- [x] Monthly statistics  
+- [x] Excel export for monthly stats  
+- [x] Weekly affluence tracking  
+- [x] Basic authentication system  
+- [ ] Password reset by email  
+- [ ] Invoice sender  
+- [ ] Export graphs as downloadable images  
+- [ ] English support  
+- [ ] Additional analytics features  
+- [ ] UI and UX improvements  
+
+More improvements can be tracked in the issue section.
+
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+1. Fork the project  
+2. Create a feature branch:  
+
+```sh
+git checkout -b feature/AmazingFeature
+```
+
+3. Commit your work:  
+
+```sh
+git commit -m "Add some AmazingFeature"
+```
+
+4. Push your branch:  
+
+```sh
+git push origin feature/AmazingFeature
+```
+
+5. Open a pull request  
+
+### Top Contributors
+
+<a href="https://github.com/thibaultfradet/launchy/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=thibaultfradet/launchy" alt="contrib.rocks image" />
+</a>
